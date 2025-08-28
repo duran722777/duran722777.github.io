@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>오늘의 행복</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Arial', sans-serif;
+    color: white;
+    text-align: center;
+    background-size: cover;
+    background-position: center;
+    transition: background 0.5s ease-in-out;
+  }
+  .quote-box {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 40px;
+    border-radius: 20px;
+    max-width: 80%;
+  }
+  button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgba(255,255,255,0.8);
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+  }
+</style>
+</head>
+<body>
+
+<div class="quote-box" id="quoteBox">
+  오늘의 행복을 느껴보세요!
+  <br>
+  <button onclick="newQuote()">새 문구</button>
+</div>
+
+<script>
+// 행복 문구 배열 (원하는 만큼 늘릴 수 있음)
+const quotes = [
+  "나는 이미 충분히 부자다. 행복이 내 마음속에 있다.",
+  "작은 것에도 감사하며 만족을 느낄 수 있다.",
+  "오늘의 나는 편안하고, 마음이 풍요롭다.",
+  "행복은 외부에서 오는 것이 아니라 내 마음에서 온다.",
+  "오늘 하루, 나는 웃음을 선택한다.",
+  "부드러운 마음이 나를 풍요롭게 만든다.",
+  "마음속 풍요가 내 하루를 밝게 한다."
+];
+
+// 배경 이미지 배열 (깃허브에 올린 이미지 URL로 교체 가능)
+const images = [
+  "https://source.unsplash.com/1600x900/?sunset,peaceful",
+  "https://source.unsplash.com/1600x900/?nature,calm",
+  "https://source.unsplash.com/1600x900/?coffee,cozy",
+  "https://source.unsplash.com/1600x900/?mountain,serene"
+];
+
+// 랜덤 선택 함수
+function getRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// 새 문구 보여주는 함수
+function newQuote() {
+  const quoteBox = document.getElementById('quoteBox');
+  quoteBox.innerHTML = getRandom(quotes) + '<br><button onclick="newQuote()">새 문구</button>';
+  document.body.style.backgroundImage = `url('${getRandom(images)}')`;
+}
+
+// 페이지 로드 시 초기 문구/배경 설정
+window.onload = newQuote;
+</script>
+
+</body>
+</html>
