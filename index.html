@@ -7,14 +7,15 @@
   body {
     margin: 0;
     padding: 0;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     font-family: 'Arial', sans-serif;
-    background-color: #f9f5ee;
+    background-color: #fdf6e3;
     text-align: center;
+    overflow-x: hidden;
   }
 
   h1 {
@@ -25,12 +26,14 @@
 
   .cookies {
     display: flex;
-    gap: 30px;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .cookie {
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
     background-color: #deb887;
     border-radius: 50%;
     display: flex;
@@ -38,24 +41,51 @@
     align-items: center;
     cursor: pointer;
     box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-    transition: transform 0.2s;
-    font-size: 3em;
+    transition: transform 0.3s;
+    font-size: 2.5em;
+    position: relative;
   }
 
-  .cookie:hover {
-    transform: scale(1.15);
+  .cookie:active {
+    animation: shake 0.5s;
+  }
+
+  @keyframes shake {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(15deg); }
+    50% { transform: rotate(-15deg); }
+    75% { transform: rotate(10deg); }
+    100% { transform: rotate(0deg); }
   }
 
   #fortune {
     margin-top: 30px;
     padding: 25px;
-    max-width: 500px;
+    max-width: 90%;
     border-radius: 15px;
     background-color: #fff8dc;
     color: #333;
     box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
     min-height: 100px;
     font-size: 1.2em;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+  }
+
+  /* 모바일 대응 */
+  @media (max-width: 600px) {
+    .cookie {
+      width: 100px;
+      height: 100px;
+      font-size: 2em;
+    }
+    h1 {
+      font-size: 1.5em;
+    }
+    #fortune {
+      font-size: 1em;
+      padding: 20px;
+    }
   }
 </style>
 </head>
@@ -70,11 +100,8 @@
 
 <div id="fortune">여기에 오늘의 문구가 나타납니다.</div>
 
-<!-- 귀여운 사운드 -->
-<audio id="cookieSound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3"></audio>
-
 <script>
-// 문구 100개 (예시, 필요하면 실제 100개로 채워야 함)
+// 문구 100개 (앞서 제공한 문구)
 const fortunes = [
 "오늘 당신은 작은 기쁨을 발견할 것입니다.",
 "마음속 풍요가 오늘 하루를 밝게 합니다.",
@@ -97,7 +124,7 @@ const fortunes = [
 "오늘의 긍정이 내일의 행복을 만듭니다.",
 "행운은 준비된 마음에게 옵니다.",
 "자연의 소리를 들으며 숨을 고르세요.",
-"오늘 하루, 마음속 평화를 느껴보세요.",
+"오늘 하루, 마음의 평화를 느껴보세요.",
 "작은 성공을 축하하세요.",
 "감사하는 마음이 행복을 키웁니다.",
 "오늘 하루, 자신에게 여유를 주세요.",
@@ -176,14 +203,14 @@ const fortunes = [
 "오늘의 기쁨을 기록해보세요."
 ];
 
-// 쿠키 클릭 시 문구 표시 + 소리 재생
+// 쿠키 클릭 시 문구 등장 + 애니메이션 효과
 function openCookie() {
   const fortuneBox = document.getElementById("fortune");
-  fortuneBox.innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
-
-  const sound = document.getElementById("cookieSound");
-  sound.currentTime = 0;
-  sound.play();
+  fortuneBox.style.opacity = 0; // 먼저 숨기기
+  setTimeout(() => {
+    fortuneBox.innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
+    fortuneBox.style.opacity = 1; // 부드럽게 등장
+  }, 200);
 }
 </script>
 
