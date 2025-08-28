@@ -2,82 +2,87 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>오늘의 행복</title>
+<title>포춘 쿠키</title>
 <style>
   body {
     margin: 0;
     padding: 0;
     height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     font-family: 'Arial', sans-serif;
-    color: white;
+    background-color: #f9f5ee;
     text-align: center;
-    background-size: cover;
-    background-position: center;
-    transition: background 0.5s ease-in-out;
   }
-  .quote-box {
-    background: rgba(0, 0, 0, 0.5);
-    padding: 40px;
-    border-radius: 20px;
-    max-width: 80%;
+
+  h1 {
+    margin-bottom: 30px;
+    color: #d2691e;
   }
-  button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 10px;
-    background-color: rgba(255,255,255,0.8);
+
+  .cookies {
+    display: flex;
+    gap: 20px;
+  }
+
+  .cookie {
+    width: 100px;
+    height: 100px;
+    background-color: #deb887;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
-    font-size: 16px;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+  }
+
+  .cookie:hover {
+    transform: scale(1.1);
+  }
+
+  #fortune {
+    margin-top: 30px;
+    padding: 20px;
+    max-width: 400px;
+    border-radius: 15px;
+    background-color: #fff8dc;
     color: #333;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+    min-height: 60px;
   }
 </style>
 </head>
 <body>
 
-<div class="quote-box" id="quoteBox">
-  오늘의 행복을 느껴보세요!
-  <br>
-  <button onclick="newQuote()">새 문구</button>
+<h1>포춘 쿠키를 선택하세요!</h1>
+<div class="cookies">
+  <div class="cookie" onclick="openCookie()">🍪</div>
+  <div class="cookie" onclick="openCookie()">🍪</div>
+  <div class="cookie" onclick="openCookie()">🍪</div>
 </div>
 
+<div id="fortune">여기에 오늘의 문구가 나타납니다.</div>
+
 <script>
-// 행복 문구 배열 (원하는 만큼 늘릴 수 있음)
-const quotes = [
-  "나는 이미 충분히 부자다. 행복이 내 마음속에 있다.",
-  "작은 것에도 감사하며 만족을 느낄 수 있다.",
-  "오늘의 나는 편안하고, 마음이 풍요롭다.",
-  "행복은 외부에서 오는 것이 아니라 내 마음에서 온다.",
-  "오늘 하루, 나는 웃음을 선택한다.",
-  "부드러운 마음이 나를 풍요롭게 만든다.",
-  "마음속 풍요가 내 하루를 밝게 한다."
+// 문구 배열
+const fortunes = [
+  "오늘 당신은 작은 기쁨을 발견할 것입니다.",
+  "마음속 풍요가 오늘 하루를 밝게 합니다.",
+  "작은 감사가 큰 행복으로 돌아옵니다.",
+  "오늘의 웃음이 내일의 행운을 부릅니다.",
+  "포근한 마음으로 주변을 바라보세요.",
+  "당신의 마음이 편안하면 세상도 편안합니다."
 ];
 
-// 배경 이미지 배열 (깃허브에 올린 이미지 URL로 교체 가능)
-const images = [
-  "https://source.unsplash.com/1600x900/?sunset,peaceful",
-  "https://source.unsplash.com/1600x900/?nature,calm",
-  "https://source.unsplash.com/1600x900/?coffee,cozy",
-  "https://source.unsplash.com/1600x900/?mountain,serene"
-];
-
-// 랜덤 선택 함수
-function getRandom(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
+// 쿠키 선택 시 문구 표시 함수
+function openCookie() {
+  const fortuneBox = document.getElementById("fortune");
+  fortuneBox.innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
 }
-
-// 새 문구 보여주는 함수
-function newQuote() {
-  const quoteBox = document.getElementById('quoteBox');
-  quoteBox.innerHTML = getRandom(quotes) + '<br><button onclick="newQuote()">새 문구</button>';
-  document.body.style.backgroundImage = `url('${getRandom(images)}')`;
-}
-
-// 페이지 로드 시 초기 문구/배경 설정
-window.onload = newQuote;
 </script>
 
 </body>
