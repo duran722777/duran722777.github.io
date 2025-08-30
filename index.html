@@ -132,28 +132,6 @@ p.desc {
     to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes shake-letter {
-    0% { transform: translateY(0) rotate(0deg); }
-    25% { transform: translateY(-2px) rotate(-2deg); }
-    50% { transform: translateY(2px) rotate(2deg); }
-    75% { transform: translateY(-1px) rotate(-1deg); }
-    100% { transform: translateY(0) rotate(0deg); }
-}
-
-@keyframes sparkle-letter {
-    0%, 100% { text-shadow: 0 0 0 rgba(255,223,186,0); }
-    50% { text-shadow: 0 0 8px rgba(255,223,186,0.7); }
-}
-
-@keyframes cookie-levelup {
-    0% { transform: scale(1) rotate(0deg); }
-    20% { transform: scale(1.1) rotate(-5deg); }
-    40% { transform: scale(1.1) rotate(5deg); }
-    60% { transform: scale(1.1) rotate(-3deg); }
-    80% { transform: scale(1.1) rotate(3deg); }
-    100% { transform: scale(1) rotate(0deg); }
-}
-
 footer {
     max-width: 800px;
     margin: 20px auto 40px;
@@ -196,6 +174,22 @@ footer a {
 
 .share-buttons button:hover {
     background-color: #ffc6d0;
+}
+
+/* 폭죽 효과 */
+.firework {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: radial-gradient(circle, #ffd700, #ff69b4);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: explode 0.8s forwards;
+}
+
+@keyframes explode {
+    0% { opacity: 1; transform: translate(0,0) scale(1); }
+    100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(2); }
 }
 
 @media (max-width: 600px) {
@@ -288,6 +282,21 @@ function getRandomFortune(){
     return fortunes[selectedCategory][Math.floor(Math.random()*fortunes[selectedCategory].length)];
 }
 
+function createFireworks(x,y){
+    for(let i=0;i<12;i++){
+        const f = document.createElement("div");
+        f.className="firework";
+        const angle = Math.random()*2*Math.PI;
+        const distance = 50 + Math.random()*30;
+        f.style.setProperty('--x', `${Math.cos(angle)*distance}px`);
+        f.style.setProperty('--y', `${Math.sin(angle)*distance}px`);
+        f.style.left = `${x}px`;
+        f.style.top = `${y}px`;
+        document.body.appendChild(f);
+        setTimeout(()=>f.remove(), 800);
+    }
+}
+
 function openCookie() {
     if(!selectedCategory){
         alert("먼저 카테고리를 선택해주세요!");
@@ -302,8 +311,10 @@ function openCookie() {
 
     updateStatus();
 
-    if(Math.random()<0.15){
+    const isMini = Math.random()<0.15;
+    if(isMini){
         fortuneBox.innerText = miniFortunes[Math.floor(Math.random()*miniFortunes.length)];
+        createFireworks(window.innerWidth/2, fortuneBox.getBoundingClientRect().top+50);
         return;
     }
 
@@ -317,7 +328,7 @@ function openCookie() {
     });
 }
 
-// 소셜 공유 기능 (간단 예시)
+// 소셜 공유 기능
 function shareTwitter(){
     const text = encodeURIComponent(fortuneBox.innerText);
     window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
