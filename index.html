@@ -83,9 +83,6 @@ p.desc {
     background-size: cover;
     background-position: center;
     border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     cursor: pointer;
     box-shadow: 2px 4px 12px rgba(0,0,0,0.2);
     transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
@@ -118,9 +115,10 @@ p.desc {
     min-height: 90px;
     font-size: 1.3em;
     text-align: center;
-    position: relative;
-    transition: background 0.5s, box-shadow 0.5s;
     line-height: 1.5em;
+    background: linear-gradient(to bottom, #ffe6f0, #ffd6e8);
+    transition: background 0.5s, box-shadow 0.5s;
+    word-break: keep-all;
 }
 
 .fortune-letter {
@@ -179,6 +177,27 @@ footer a {
     margin-top: 30px;
 }
 
+.share-buttons {
+    margin: 15px 0;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.share-buttons button {
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: none;
+    background-color: #ffd6e8;
+    cursor: pointer;
+    font-size: 0.95em;
+    transition: background 0.2s;
+}
+
+.share-buttons button:hover {
+    background-color: #ffc6d0;
+}
+
 @media (max-width: 600px) {
     .cookie { width: 110px; height: 110px; }
     h1 { font-size: 1.8em; }
@@ -187,7 +206,6 @@ footer a {
 }
 </style>
 </head>
-
 <body>
 <header>
     <h1>오늘의 행복 문구 쿠키</h1>
@@ -211,6 +229,12 @@ footer a {
 
 <div id="fortune">여기에 오늘의 문구가 나타납니다.</div>
 
+<div class="share-buttons">
+    <button onclick="shareTwitter()">트위터 공유</button>
+    <button onclick="shareFacebook()">페이스북 공유</button>
+    <button onclick="shareKakao()">카카오톡 공유</button>
+</div>
+
 <footer>
     <p>이 웹사이트는 누구나 무료로 즐길 수 있습니다.</p>
 </footer>
@@ -231,7 +255,6 @@ footer a {
 let points = 0;
 let level = 1;
 let selectedCategory = null;
-
 const fortuneBox = document.getElementById("fortune");
 
 document.querySelectorAll('.category-buttons button').forEach(btn=>{
@@ -243,21 +266,21 @@ document.querySelectorAll('.category-buttons button').forEach(btn=>{
 });
 
 const fortunes = {
-    luck: ["오늘은 작은 기쁨이 크게 다가올 거예요.","머지않아 노력의 결실을 보게 될 거예요.","조만간 웃음을 주는 만남이 기다리고 있어요."],
-    money: ["뜻밖의 재물이 들어올 수 있어요.","오늘은 마음의 풍요가 가득합니다.","작은 투자에서 큰 기쁨이 올 수 있어요."],
-    love: ["곧 좋은 인연이 찾아올 거예요.","오늘은 사랑의 기운이 가득합니다.","누군가에게 따뜻한 마음을 전해보세요."],
-    health: ["오늘은 몸과 마음 모두 편안하게 흘러갈 거예요.","작은 운동이 큰 활력을 가져옵니다.","건강한 마음이 하루를 즐겁게 합니다."]
+    luck: ["오늘은 작은 기쁨이 크게 다가올 거예요.", "머지않아 노력의 결실을 보게 될 거예요.", "조만간 웃음을 주는 만남이 기다리고 있어요."],
+    money: ["뜻밖의 재물이 들어올 수 있어요.", "오늘은 마음의 풍요가 가득합니다.", "작은 투자에서 큰 기쁨이 올 수 있어요."],
+    love: ["곧 좋은 인연이 찾아올 거예요.", "오늘은 사랑의 기운이 가득합니다.", "누군가에게 따뜻한 마음을 전해보세요."],
+    health: ["오늘은 몸과 마음 모두 편안하게 흘러갈 거예요.", "작은 운동이 큰 활력을 가져옵니다.", "건강한 마음이 하루를 즐겁게 합니다."]
 };
 
-const rareFortunes = ["오늘은 당신에게 행운이 폭발합니다!","특별한 기쁨이 당신을 찾아옵니다!","달콤한 놀라움이 가득한 하루예요!"];
-const miniFortunes = ["깜짝 선물 등장! 추가 행운 문구!","오늘은 특별한 기쁨이 찾아옵니다!","달콤한 행운이 당신에게 옵니다!"];
+const rareFortunes = ["오늘은 당신에게 행운이 폭발합니다!", "특별한 기쁨이 당신을 찾아옵니다!", "달콤한 놀라움이 가득한 하루예요!"];
+const miniFortunes = ["깜짝 선물 등장! 추가 행운 문구!", "오늘은 특별한 기쁨이 찾아옵니다!", "달콤한 행운이 당신에게 옵니다!"];
 
 function updateStatus() {
     document.getElementById("status").innerText = `레벨: ${level} | 포인트: ${points}`;
     if(level===1) fortuneBox.style.background='linear-gradient(to bottom, #ffe6f0, #ffd6e8)';
     else if(level===2) fortuneBox.style.background='linear-gradient(to bottom, #ffd6e8, #ffc6d0)';
     else if(level===3) fortuneBox.style.background='linear-gradient(to bottom, #ffe6d6, #ffd6c6)';
-    else if(level===4) fortuneBox.style.background='linear-gradient(to bottom, #fff0c2, #ffd699)';
+    else if(level>=4) fortuneBox.style.background='linear-gradient(to bottom, #fff0c2, #ffd699)';
 }
 
 function getRandomFortune(){
@@ -289,21 +312,27 @@ function openCookie() {
         const span = document.createElement("span");
         span.classList.add("fortune-letter");
         span.style.animationDelay = `${i*0.05}s`;
-        if(level>=3) span.style.animation = `appear 0.5s forwards, shake-letter 0.5s ${i*0.05}s`;
-        if(level>=4) span.style.animation += `, sparkle-letter 0.5s ${i*0.05}s`;
-        span.innerText = ch;
+        span.textContent = ch;
         fortuneBox.appendChild(span);
     });
-
-    if(points %5===0){
-        fortuneBox.style.boxShadow="0 0 20px rgba(255,215,0,0.8)";
-        document.querySelectorAll('.cookie').forEach(cookie=>{
-            cookie.style.animation="cookie-levelup 0.8s";
-            setTimeout(()=>{cookie.style.animation="";},800);
-        });
-        setTimeout(()=>{fortuneBox.style.boxShadow="2px 2px 12px rgba(0,0,0,0.2)";},800);
-    }
 }
+
+// 소셜 공유 기능 (간단 예시)
+function shareTwitter(){
+    const text = encodeURIComponent(fortuneBox.innerText);
+    window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+}
+
+function shareFacebook(){
+    const text = encodeURIComponent(fortuneBox.innerText);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=&quote=${text}`, '_blank');
+}
+
+function shareKakao(){
+    alert("카카오톡 공유는 모바일에서 지원됩니다.");
+}
+
+updateStatus();
 </script>
 </body>
 </html>
