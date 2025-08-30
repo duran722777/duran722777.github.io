@@ -6,19 +6,13 @@
 <title>오늘의 행복 문구 쿠키</title>
 <style>
 body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    margin: 0; padding: 0; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
     font-family: 'Arial', sans-serif;
     background: linear-gradient(to bottom, #fff1e6, #ffe8d6);
 }
 header {
-    max-width: 800px;
-    padding: 20px;
-    text-align: center;
+    max-width: 800px; padding: 20px; text-align: center;
 }
 h1 { margin: 20px 0 10px; color: #d2691e; font-size: 2.4em; }
 p.desc { color: #444; font-size: 1.1em; margin: 0 10px 20px; line-height: 1.5; }
@@ -36,9 +30,12 @@ p.desc { color: #444; font-size: 1.1em; margin: 0 10px 20px; line-height: 1.5; }
 .cookie {
     width: 140px; height: 140px; font-size: 3.2em;
     display: flex; justify-content: center; align-items: center;
-    cursor: pointer; transition: transform 0.2s;
+    cursor: pointer; position: relative;
+    transition: transform 0.2s;
+    border-radius: 50%; background: #ffecf2;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
-.cookie:active { transform: scale(0.9); }
+.cookie:hover { transform: scale(1.05); }
 
 #fortune {
     margin-top: 25px; padding: 20px; max-width: 90%;
@@ -56,6 +53,8 @@ p.desc { color: #444; font-size: 1.1em; margin: 0 10px 20px; line-height: 1.5; }
     background:#ffd6e8; cursor:pointer; font-size:0.95em;
 }
 
+#status { margin-top:10px; font-weight:bold; color:#d2691e; }
+
 footer {
     max-width: 800px; margin: 20px auto 40px; font-size: 0.9em;
     color: #555; line-height: 1.4; text-align: center;
@@ -63,6 +62,10 @@ footer {
 footer a { color: #d2691e; text-decoration: none; }
 
 .ad-container { width: 100%; background: #fff; padding: 8px 0; text-align: center; }
+
+.firework {
+    position: absolute; font-size: 18px; pointer-events:none;
+}
 
 @media (max-width: 600px) {
     .cookie { width: 110px; height: 110px; font-size: 2.5em; }
@@ -92,7 +95,7 @@ footer a { color: #d2691e; text-decoration: none; }
 </div>
 
 <div id="fortune">오늘의 행복 문구가 여기에 나타납니다.</div>
-<div id="status" style="margin-top:15px;"></div>
+<div id="status"></div>
 
 <div id="share-buttons">
     <button class="share-btn" onclick="shareTwitter()">트위터 공유</button>
@@ -144,24 +147,21 @@ function getRandomFortune(){
 }
 
 function createFireworks(x,y){
-    let count = 10;
-    let shapes = ["✨"];
-    let colors = ["#ffd700","#ff69b4"];
-    if(level===3){ count=15; shapes.push("💖"); colors.push("#ff8c00"); }
-    if(level>=4){ count=22; shapes.push("💖","🌟"); colors.push("#00ffff","#ff00ff","#ff4500"); }
+    let count = 10; let shapes = ["✨"];
+    let colors = ["#ff99cc","#ffb6c1"];
+    if(level===3){ count=15; shapes.push("💖"); colors.push("#ff69b4","#ffb347"); }
+    if(level>=4){ count=22; shapes.push("💖","🌟","🎉"); colors.push("#00ffff","#ff00ff","#ff4500","#ffd700","#ff69b4"); }
 
     for(let i=0;i<count;i++){
         const f = document.createElement("div");
         f.className="firework";
         const angle = Math.random()*2*Math.PI;
         const distance = 50 + Math.random()*50;
-        f.style.position="absolute";
         f.style.left=`${x}px`;
         f.style.top=`${y}px`;
         f.style.transform=`translate(${Math.cos(angle)*distance}px,${Math.sin(angle)*distance}px)`;
         f.style.color = colors[Math.floor(Math.random()*colors.length)];
         f.textContent = shapes[Math.floor(Math.random()*shapes.length)];
-        f.style.fontSize="18px";
         document.body.appendChild(f);
         setTimeout(()=>f.remove(),800);
     }
@@ -192,14 +192,14 @@ function openCookie(){
         fortuneBox.appendChild(span);
     });
 
-    if(Math.random()<0.25) createFireworks(window.innerWidth/2, fortuneBox.getBoundingClientRect().top+50);
+    createFireworks(window.innerWidth/2, fortuneBox.getBoundingClientRect().top+50);
 }
 
 // 소셜 공유
 function shareTwitter(){
     const text = document.getElementById("fortune").innerText;
     const url = encodeURIComponent(location.href);
-    const img = encodeURIComponent("https://i.ibb.co/9Hz8TqP/cookie.png"); // 미리보기 이미지
+    const img = encodeURIComponent("https://i.ibb.co/9Hz8TqP/cookie.png");
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}&via=&hashtags=행복,포춘쿠키`);
 }
 function shareFacebook(){
