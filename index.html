@@ -14,13 +14,14 @@ html, body {
     height: 100%;
     min-height: 100%;
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(to bottom, #fff1e6, #ffe8d6);
+    background: linear-gradient(to bottom, #ffe6f0, #ffd6e8); /* 핑크 배경 */
 }
 
 body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
 }
 
 header {
@@ -118,12 +119,12 @@ p.desc {
     100% { transform: rotate(0deg); }
 }
 
-/* 부드러운 폭죽 배경 애니메이션 (파스텔톤, 눈 편안하게) */
+/* 부드러운 폭죽 배경 애니메이션 */
 @keyframes fireworks {
     0%,100% { background-color: #fff8dc; }
-    25% { background-color: #fff0b3; }
-    50% { background-color: #ffd6d6; }
-    75% { background-color: #d6fff4; }
+    25% { background-color: #ffe0f0; }
+    50% { background-color: #ffd0e8; }
+    75% { background-color: #ffe6f0; }
 }
 
 footer {
@@ -141,16 +142,14 @@ footer a {
     text-decoration: none;
 }
 
-/* 광고 영역 - 화면 하단 고정 */
+/* 광고 영역 - 스크롤 시 자연스럽게 노출 */
 .ad-container {
-    position: fixed;
-    bottom: 0;
     width: 100%;
-    background: linear-gradient(to bottom, #fff1e6, #ffe8d6);
+    background: linear-gradient(to bottom, #ffe6f0, #ffd6e8);
     padding: 8px 0;
     text-align: center;
     box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
-    z-index: 100;
+    margin-top: 40px;
 }
 
 /* 모바일 대응 */
@@ -178,10 +177,11 @@ footer a {
 <div id="fortune">여기에 오늘의 문구가 나타납니다.</div>
 
 <footer>
-    <p><strong>이용 안내:</strong> 이 웹사이트는 단순 엔터테인먼트용 서비스입니다.<br> 실제 운세와는 관련이 없으며 누구나 무료로 즐기실 수 있습니다.</p>
+    <p><strong>이용 안내:</strong> 이 웹사이트는 단순 엔터테인먼트용 서비스입니다.<br> 누구나 무료로 즐기실 수 있습니다.</p>
     <p><a href="#">개인정보 처리방침</a> | <a href="#">FAQ</a></p>
 </footer>
 
+<!-- 광고 영역 -->
 <div class="ad-container">
     <ins class="adsbygoogle"
          style="display:block"
@@ -208,16 +208,26 @@ const fortunes = [
     "조만간 당신을 위한 기회가 열릴 거예요."
 ];
 
+const miniFortunes = [
+    "🎁 깜짝 선물 등장! 추가 행운 문구!",
+    "✨ 오늘의 특별한 행복이 찾아왔어요!",
+    "💖 달콤한 기쁨이 당신을 기다립니다!"
+];
+
 function openCookie() {
     const fortuneBox = document.getElementById("fortune");
     fortuneBox.innerHTML = ""; // 기존 내용 삭제
 
-    const text = fortunes[Math.floor(Math.random() * fortunes.length)];
+    // 랜덤 미니 이벤트 20% 확률
+    let isMiniEvent = Math.random() < 0.2;
+    const text = isMiniEvent 
+        ? miniFortunes[Math.floor(Math.random() * miniFortunes.length)] 
+        : fortunes[Math.floor(Math.random() * fortunes.length)];
 
-    // 띄어쓰기 처리
+    // 띄어쓰기 처리 + 글자 하나씩 등장
     text.split('').forEach((char, i) => {
         const span = document.createElement('span');
-        span.textContent = char === ' ' ? '\u00A0' : char; // 공백이면 &nbsp;
+        span.textContent = char === ' ' ? '\u00A0' : char;
         span.className = 'fortune-letter';
         span.style.animationDelay = `${i * 0.05}s`;
         fortuneBox.appendChild(span);
@@ -226,7 +236,7 @@ function openCookie() {
     // 부드러운 폭죽 배경
     fortuneBox.style.animation = 'fireworks 1.5s ease-in-out';
 
-    // 글자 흔들림 애니메이션 (폭죽 끝난 후)
+    // 글자 흔들림 애니메이션
     setTimeout(() => {
         fortuneBox.style.animation = 'shakeText 0.5s';
     }, text.length * 50 + 300);
