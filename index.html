@@ -5,23 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>오늘의 행복 문구 쿠키</title>
 
+<!-- 구글 애드센스 -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4634078773523032" crossorigin="anonymous"></script>
 
 <style>
-html, body {
+body {
     margin: 0;
     padding: 0;
-    height: 100%;
-    min-height: 100%;
+    min-height: 100vh;
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(to bottom, #ffe6f0, #ffd6e8); /* 핑크 배경 */
-}
-
-body {
+    background: linear-gradient(to bottom, #fff1e6, #ffe8d6);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
 }
 
 header {
@@ -44,6 +40,14 @@ p.desc {
     line-height: 1.5;
 }
 
+/* 레벨 & 포인트 표시 */
+#status {
+    margin: 10px 0;
+    font-size: 1em;
+    color: #555;
+}
+
+/* 쿠키 영역 */
 .cookies {
     display: flex;
     gap: 20px;
@@ -83,58 +87,53 @@ p.desc {
     50% { transform: translateY(-15px); }
 }
 
-/* 포춘 메시지 스타일 */
+/* 메시지 창 */
 #fortune {
     margin-top: 25px;
     padding: 20px;
     max-width: 90%;
     border-radius: 15px;
-    background-color: #fff8dc;
+    background: linear-gradient(to bottom, #ffe6f0, #ffd6e8);
     color: #333;
     box-shadow: 2px 2px 12px rgba(0,0,0,0.2);
     min-height: 90px;
     font-size: 1.3em;
     text-align: center;
     position: relative;
-    overflow: hidden;
 }
 
-/* 글자 하나씩 나타나는 애니메이션 */
 .fortune-letter {
     display: inline-block;
     opacity: 0;
-    animation: appear 0.05s forwards;
+    animation: appear 0.5s forwards;
 }
 
 @keyframes appear {
-    to { opacity: 1; }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* 글자 흔들림 */
-@keyframes shakeText {
-    0% { transform: rotate(0deg); }
-    25% { transform: rotate(5deg); }
-    50% { transform: rotate(-5deg); }
-    75% { transform: rotate(3deg); }
-    100% { transform: rotate(0deg); }
-}
-
-/* 부드러운 폭죽 배경 애니메이션 */
 @keyframes fireworks {
-    0%,100% { background-color: #fff8dc; }
-    25% { background-color: #ffe0f0; }
-    50% { background-color: #ffd0e8; }
-    75% { background-color: #ffe6f0; }
+    0% { box-shadow: 0 0 0 rgba(255, 223, 186, 0); }
+    50% { box-shadow: 0 0 15px rgba(255, 223, 186, 0.7); }
+    100% { box-shadow: 0 0 0 rgba(255, 223, 186, 0); }
 }
 
+@keyframes shakeText {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    50% { transform: translateX(3px); }
+    75% { transform: translateX(-3px); }
+}
+
+/* 이용 안내 */
 footer {
     max-width: 800px;
-    margin: 20px auto 20px;
+    margin: 20px auto 40px;
     font-size: 0.9em;
     color: #555;
     line-height: 1.4;
     text-align: center;
-    background: transparent;
 }
 
 footer a {
@@ -142,14 +141,14 @@ footer a {
     text-decoration: none;
 }
 
-/* 광고 영역 - 스크롤 시 자연스럽게 노출 */
+/* 광고 영역 */
 .ad-container {
     width: 100%;
-    background: linear-gradient(to bottom, #ffe6f0, #ffd6e8);
+    background: #fff;
     padding: 8px 0;
     text-align: center;
     box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
-    margin-top: 40px;
+    margin-top: 30px;
 }
 
 /* 모바일 대응 */
@@ -164,9 +163,11 @@ footer a {
 
 <body>
 <header>
-    <h1>오늘의 행복 문구 쿠키</h1>
-    <p class="desc">재미있는 쿠키를 클릭하면 오늘의 행복한 메시지가 나타납니다.<br>행운과 긍정적인 에너지를 받아보세요!</p>
+    <h1>🥠 오늘의 행복 문구 쿠키</h1>
+    <p class="desc">쿠키를 클릭하면 오늘의 메시지가 나타납니다.🎉<br>작은 기쁨과 행운을 느껴보세요!</p>
 </header>
+
+<div id="status">레벨: 1 | 포인트: 0</div>
 
 <div class="cookies">
     <div class="cookie" onclick="openCookie()">🍪</div>
@@ -177,11 +178,9 @@ footer a {
 <div id="fortune">여기에 오늘의 문구가 나타납니다.</div>
 
 <footer>
-    <p><strong>이용 안내:</strong> 이 웹사이트는 단순 엔터테인먼트용 서비스입니다.<br> 누구나 무료로 즐기실 수 있습니다.</p>
-    <p><a href="#">개인정보 처리방침</a> | <a href="#">FAQ</a></p>
+    <p>이 웹사이트는 누구나 무료로 즐길 수 있습니다.</p>
 </footer>
 
-<!-- 광고 영역 -->
 <div class="ad-container">
     <ins class="adsbygoogle"
          style="display:block"
@@ -195,51 +194,97 @@ footer a {
 </div>
 
 <script>
-const fortunes = [
-    "오늘은 작은 기쁨이 크게 다가올 거예요.",
-    "곧 예상치 못한 좋은 소식을 듣게 될 거예요.",
-    "머지않아 당신의 진심이 전해질 순간이 옵니다.",
-    "조만간 웃음을 주는 만남이 기다리고 있어요.",
-    "당신의 하루는 특별한 추억으로 채워질 거예요.",
-    "가까운 미래에 기대하지 못한 행운이 찾아옵니다.",
-    "오늘은 걱정보다 미소가 더 많을 거예요.",
-    "곧 당신이 바라던 답을 얻게 될 거예요.",
-    "머지않아 노력의 결실을 보게 될 거예요.",
-    "조만간 당신을 위한 기회가 열릴 거예요."
+// 포인트 & 레벨
+let points = 0;
+let level = 1;
+
+// 카테고리별 문구
+const fortunes = {
+    luck: [
+        "오늘은 작은 기쁨이 크게 다가올 거예요.",
+        "머지않아 노력의 결실을 보게 될 거예요.",
+        "조만간 웃음을 주는 만남이 기다리고 있어요."
+    ],
+    money: [
+        "뜻밖의 재물이 들어올 수 있어요.",
+        "오늘은 돈보다는 마음의 풍요가 가득합니다.",
+        "작은 투자에서 큰 기쁨이 올 수 있어요."
+    ],
+    love: [
+        "곧 좋은 인연이 찾아올 거예요.",
+        "오늘은 사랑의 기운이 가득합니다.",
+        "누군가에게 따뜻한 마음을 전해보세요."
+    ],
+    health: [
+        "오늘은 몸과 마음 모두 편안하게 흘러갈 거예요.",
+        "작은 운동이 큰 활력을 가져옵니다.",
+        "건강한 마음이 하루를 즐겁게 합니다."
+    ]
+};
+
+// 희귀 문구
+const rareFortunes = [
+    "🌟 오늘은 당신에게 행운이 폭발합니다!",
+    "💫 특별한 기쁨이 당신을 찾아옵니다!",
+    "✨ 달콤한 놀라움이 가득한 하루예요!"
 ];
 
+// 미니 이벤트 문구
 const miniFortunes = [
     "🎁 깜짝 선물 등장! 추가 행운 문구!",
-    "✨ 오늘의 특별한 행복이 찾아왔어요!",
-    "💖 달콤한 기쁨이 당신을 기다립니다!"
+    "✨ 오늘은 특별한 기쁨이 찾아옵니다!",
+    "💖 달콤한 행운이 당신에게 옵니다!"
 ];
+
+function updateStatus() {
+    document.getElementById("status").innerText = `레벨: ${level} | 포인트: ${points}`;
+}
 
 function openCookie() {
     const fortuneBox = document.getElementById("fortune");
-    fortuneBox.innerHTML = ""; // 기존 내용 삭제
+    fortuneBox.innerHTML = "";
 
-    // 랜덤 미니 이벤트 20% 확률
-    let isMiniEvent = Math.random() < 0.2;
-    const text = isMiniEvent 
-        ? miniFortunes[Math.floor(Math.random() * miniFortunes.length)] 
-        : fortunes[Math.floor(Math.random() * fortunes.length)];
+    // 기본 포인트 1점
+    points += 1;
 
-    // 띄어쓰기 처리 + 글자 하나씩 등장
-    text.split('').forEach((char, i) => {
+    // 레벨업 확인
+    if(points >= 30) level = 4;
+    else if(points >= 20) level = 3;
+    else if(points >= 10) level = 2;
+    else level = 1;
+
+    updateStatus();
+
+    // 랜덤으로 카테고리 선택
+    const categories = ['luck','money','love','health'];
+    const selectedCategory = categories[Math.floor(Math.random()*categories.length)];
+
+    // 미니 이벤트 20% 확률, 레벨 4이면 50% 확률로 희귀문구
+    let text;
+    if(level === 4 && Math.random() < 0.5){
+        text = rareFortunes[Math.floor(Math.random()*rareFortunes.length)];
+        points += 3; // 희귀 문구 보너스
+    } else if(Math.random() < 0.2){
+        text = miniFortunes[Math.floor(Math.random()*miniFortunes.length)];
+        points += 3;
+    } else {
+        text = fortunes[selectedCategory][Math.floor(Math.random()*fortunes[selectedCategory].length)];
+    }
+
+    updateStatus();
+
+    // 글자 하나씩 등장
+    text.split('').forEach((char, i)=>{
         const span = document.createElement('span');
         span.textContent = char === ' ' ? '\u00A0' : char;
         span.className = 'fortune-letter';
-        span.style.animationDelay = `${i * 0.05}s`;
+        span.style.animationDelay = `${i*0.05}s`;
         fortuneBox.appendChild(span);
     });
 
-    // 부드러운 폭죽 배경
+    // 폭죽 효과
     fortuneBox.style.animation = 'fireworks 1.5s ease-in-out';
-
-    // 글자 흔들림 애니메이션
-    setTimeout(() => {
-        fortuneBox.style.animation = 'shakeText 0.5s';
-    }, text.length * 50 + 300);
+    setTimeout(()=>{ fortuneBox.style.animation = 'shakeText 0.5s'; }, text.length*50 + 300);
 }
 </script>
 </body>
