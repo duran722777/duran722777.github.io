@@ -9,15 +9,19 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4634078773523032" crossorigin="anonymous"></script>
 
 <style>
-body {
+html, body {
     margin: 0;
     padding: 0;
-    min-height: 100vh;
+    height: 100%;
+    min-height: 100%;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to bottom, #fff1e6, #ffe8d6); /* 전체 배경 */
+}
+
+body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(to bottom, #fff1e6, #ffe8d6);
 }
 
 header {
@@ -108,11 +112,12 @@ p.desc {
 
 footer {
     max-width: 800px;
-    margin: 20px auto 80px; /* 광고 공간 확보 */
+    margin: 20px auto 20px;
     font-size: 0.9em;
     color: #555;
     line-height: 1.4;
     text-align: center;
+    background: transparent; /* 배경 자연스럽게 */
 }
 
 footer a {
@@ -122,14 +127,13 @@ footer a {
 
 /* 광고 영역 */
 .ad-container {
-    position: fixed;
-    bottom: 0;
     width: 100%;
-    background: #fff;
+    background: linear-gradient(to bottom, #fff1e6, #ffe8d6); /* 전체 배경과 일치 */
     padding: 8px 0;
     text-align: center;
     box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
     z-index: 100;
+    position: relative; /* fixed 제거 */
 }
 
 /* 모바일 대응 */
