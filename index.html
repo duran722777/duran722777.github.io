@@ -7,7 +7,7 @@
 <style>
   body {
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(to bottom, #fff0f5, #ffe5f0);
+    background: linear-gradient(to bottom, #ffe5f0, #fff0f5);
     margin: 0;
     padding: 0;
     overflow-x: hidden;
@@ -37,13 +37,10 @@
     background: #ffd1dc;
     color: #fff;
     font-weight: bold;
-    transition: background 0.3s;
-  }
-  .category-btn:hover {
-    background: #ff99c8;
+    font-size: 16px;
   }
   .category-btn.active {
-    background: #ff6bb5;
+    background: #ff99c8;
   }
   .message-box {
     margin-top: 30px;
@@ -56,8 +53,8 @@
   /* 글리터/빛 효과 */
   .glitter {
     position: absolute;
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     background: radial-gradient(circle, #fff 0%, #ffb6c1 80%);
     border-radius: 50%;
     opacity: 0.8;
@@ -69,18 +66,12 @@
     50% { transform: translateY(-30px) scale(1.5); opacity: 0.4; }
     100% { transform: translateY(0) scale(1); opacity: 0.8; }
   }
-  .intro {
-    font-size: 18px;
-    color: #ff69b4;
-    margin-bottom: 15px;
-  }
 </style>
 </head>
 <body>
-
 <div class="container">
   <h1>오늘의 행복 문구</h1>
-  <div class="intro">피카츄를 눌러주세요!</div>
+  <p id="startText">피카츄를 눌러서 오늘의 문구를 확인하세요!</p>
   
   <div class="categories">
     <button class="category-btn active" data-category="행운">🍀 행운</button>
@@ -89,7 +80,7 @@
     <button class="category-btn" data-category="건강">🏥 건강</button>
   </div>
   
-  <img src="https://cdn-icons-png.flaticon.com/512/188/188987.png" alt="쿠키" class="cookie" id="cookie">
+  <img src="https://cdn-icons-png.flaticon.com/512/188/188987.png" alt="피카츄" class="cookie" id="cookie">
 
   <div class="message-box" id="messageBox"></div>
 </div>
@@ -98,31 +89,51 @@
   const categories = {
     '행운': [
       "오늘 당신은 작은 기쁨을 발견할 것입니다.",
+      "오늘의 웃음이 내일의 행운을 부릅니다.",
+      "포근한 마음으로 주변을 바라보세요.",
+      "오늘은 새로운 기회를 발견할 날입니다.",
+      "작은 성공이 큰 기쁨으로 이어집니다.",
       "행운은 웃는 사람을 좋아합니다.",
-      "오늘은 새로운 시작이 열립니다.",
-      "오늘은 뜻밖의 선물이 찾아옵니다.",
-      "오늘은 소중한 순간이 기다립니다."
+      "오늘은 기분 좋은 우연이 기다리고 있습니다.",
+      "희망은 당신 곁에 머물고 있습니다.",
+      "오늘의 선택이 내일의 기적을 만듭니다.",
+      "오늘은 뜻밖의 선물이 찾아옵니다."
     ],
     '재물': [
       "마음속 풍요가 오늘 하루를 밝게 합니다.",
-      "조금씩 모은 노력이 큰 결실이 됩니다.",
-      "오늘은 재물 운이 부드럽게 흐릅니다.",
+      "작은 감사가 큰 행복으로 돌아옵니다.",
+      "오늘은 금전적 기회가 찾아올 수 있습니다.",
+      "조금 더 절약하면 큰 보람을 느낄 수 있어요.",
+      "오늘은 뜻밖의 재물이 생길 수 있습니다.",
       "작은 선택이 큰 결실로 이어집니다.",
-      "오늘은 소소한 재물 운이 따릅니다."
+      "오늘은 재정적 감각이 빛나는 날입니다.",
+      "행동하는 사람에게 기회가 찾아옵니다.",
+      "오늘은 투자보다 지혜로운 소비가 좋습니다.",
+      "재물 운은 준비된 사람에게 옵니다."
     ],
     '사랑': [
-      "작은 사랑이 세상을 바꿀 수 있습니다.",
-      "오늘은 따뜻한 인연이 찾아옵니다.",
+      "따뜻한 만남이 예상됩니다.",
+      "오늘은 사랑이 충만합니다.",
+      "당신의 미소가 주변을 밝게 합니다.",
+      "작은 친절이 큰 사랑으로 돌아옵니다.",
+      "오늘은 즐거운 만남이 기다립니다.",
       "당신은 언제나 사랑받는 존재입니다.",
-      "작은 웃음이 큰 기쁨이 됩니다.",
-      "오늘은 즐거운 일이 기다리고 있습니다."
+      "작은 용기가 큰 변화를 일으킵니다.",
+      "오늘은 새로운 희망이 시작됩니다.",
+      "당신의 진심은 언제나 전달됩니다.",
+      "작은 웃음이 큰 기쁨이 됩니다."
     ],
     '건강': [
       "몸과 마음이 편안한 하루가 돼요.",
-      "작은 운동이 큰 건강을 만듭니다.",
-      "오늘은 마음을 편히 가지세요.",
+      "오늘은 기분 좋은 운동이 행운을 부릅니다.",
       "충분한 휴식이 에너지를 줍니다.",
-      "오늘은 활기찬 하루가 기다립니다."
+      "작은 스트레칭이 큰 활력을 줍니다.",
+      "오늘은 마음을 편히 가지세요.",
+      "건강한 음식이 행복을 배가시킵니다.",
+      "작은 습관이 큰 건강으로 이어집니다.",
+      "오늘은 마음과 몸이 균형을 찾습니다.",
+      "긍정적인 생각이 몸에도 좋습니다.",
+      "오늘은 활력 넘치는 하루가 될 것입니다."
     ]
   };
 
@@ -138,10 +149,11 @@
 
   const messageBox = document.getElementById('messageBox');
   const cookie = document.getElementById('cookie');
+  const startText = document.getElementById('startText');
 
   function typeMessage(message) {
     messageBox.textContent = '';
-    const chars = Array.from(message); // 한글 글자 단위로 정확히 분리
+    const chars = Array.from(message); // 한글 깨짐 방지
     let i = 0;
     const interval = setInterval(() => {
       if(i < chars.length) {
@@ -154,16 +166,17 @@
   }
 
   cookie.addEventListener('click', () => {
+    startText.style.display = 'none';
     const msgs = categories[selectedCategory];
     const msg = msgs[Math.floor(Math.random() * msgs.length)];
     typeMessage(msg);
 
-    // 글리터 생성
+    // 글리터 효과 생성
     for(let i=0;i<5;i++){
       const glitter = document.createElement('div');
       glitter.className = 'glitter';
       glitter.style.left = Math.random()*window.innerWidth + 'px';
-      glitter.style.top = (window.scrollY + 100) + 'px';
+      glitter.style.top = (window.scrollY + 150) + 'px';
       glitter.style.animationDuration = (2 + Math.random()*2) + 's';
       document.body.appendChild(glitter);
       setTimeout(() => glitter.remove(), 3000);
