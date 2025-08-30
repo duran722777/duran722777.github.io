@@ -3,211 +3,214 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>오늘의 행복 문구 쿠키</title>
+<title>오늘의 행복 문구</title>
 <style>
-body {
-    margin: 0; padding: 0; min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center;
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(to bottom, #fff1e6, #ffe8d6);
-}
-header {
-    max-width: 800px; padding: 20px; text-align: center;
-}
-h1 { margin: 20px 0 10px; color: #d2691e; font-size: 2.4em; }
-p.desc { color: #444; font-size: 1.1em; margin: 0 10px 20px; line-height: 1.5; }
-
-.categories { margin-bottom: 15px; }
-.category-btn {
-    margin: 0 5px; padding: 6px 12px; border: none; border-radius: 6px;
-    cursor: pointer; background: #ffe6f0; font-size: 1em;
-}
-.category-btn.selected { background: #ffd6e8; }
-
-.cookies {
-    display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 10px;
-}
-.cookie {
-    width: 140px; height: 140px; font-size: 3.2em;
-    display: flex; justify-content: center; align-items: center;
-    cursor: pointer; position: relative;
-    transition: transform 0.2s;
-    border-radius: 50%; background: #ffecf2;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-.cookie:hover { transform: scale(1.05); }
-
-#fortune {
-    margin-top: 25px; padding: 20px; max-width: 90%;
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    background: #fff0f5;
+    margin: 0;
+    padding: 20px;
+    overflow-x: hidden;
+  }
+  h1 { margin-bottom: 10px; }
+  .categories { display: flex; gap: 10px; margin-bottom: 20px; }
+  .category-btn {
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #ffd6e8;
+    transition: background-color 0.3s;
+  }
+  .category-btn.active { background-color: #ffb6c1; }
+  .fortune-box {
+    position: relative;
+    width: 300px;
+    min-height: 100px;
+    background: linear-gradient(135deg, #ffe4ec, #ffc0cb);
     border-radius: 15px;
-    background: linear-gradient(to bottom, #ffe6f0, #ffd6e8);
-    color: #333; min-height: 90px; font-size: 1.3em;
-    text-align: center; display: flex; justify-content: center; flex-wrap: wrap;
-}
-.fortune-letter { opacity: 0; animation: fadeIn 0.5s forwards; }
-@keyframes fadeIn { to {opacity:1;} }
-
-#share-buttons { margin-top:15px; }
-.share-btn {
-    margin: 0 5px; padding: 6px 12px; border:none; border-radius:6px;
-    background:#ffd6e8; cursor:pointer; font-size:0.95em;
-}
-
-#status { margin-top:10px; font-weight:bold; color:#d2691e; }
-
-footer {
-    max-width: 800px; margin: 20px auto 40px; font-size: 0.9em;
-    color: #555; line-height: 1.4; text-align: center;
-}
-footer a { color: #d2691e; text-decoration: none; }
-
-.ad-container { width: 100%; background: #fff; padding: 8px 0; text-align: center; }
-
-.firework {
-    position: absolute; font-size: 18px; pointer-events:none;
-}
-
-@media (max-width: 600px) {
-    .cookie { width: 110px; height: 110px; font-size: 2.5em; }
-    h1 { font-size: 1.8em; }
-    p.desc { font-size: 0.95em; }
-    #fortune { font-size: 1.05em; padding: 18px; }
-}
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    overflow: hidden;
+  }
+  .cookie-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 2px solid #ffb6c1;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+  .particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0.8;
+    pointer-events: none;
+    animation: floatUp 2s linear forwards;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(0px) scale(1); opacity: 1; }
+    100% { transform: translateY(-50px) scale(0.5); opacity: 0; }
+  }
+  .firework {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    pointer-events: none;
+    border-radius: 50%;
+  }
+  .social-buttons { display: flex; gap: 10px; margin-top: 15px; }
+  .social-buttons a {
+    text-decoration: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  .twitter { background-color: #1da1f2; }
+  .facebook { background-color: #1877f2; }
 </style>
 </head>
 <body>
-<header>
-    <h1>오늘의 행복 문구 쿠키</h1>
-    <p class="desc">쿠키를 클릭하면 오늘의 행복 문구가 나타납니다. 포인트를 모아 레벨업 해보세요!</p>
-</header>
-
+<h1>오늘의 행복 문구</h1>
 <div class="categories">
-    <button class="category-btn" onclick="selectCategory('행운')">행운</button>
-    <button class="category-btn" onclick="selectCategory('재물')">재물</button>
-    <button class="category-btn" onclick="selectCategory('사랑')">사랑</button>
-    <button class="category-btn" onclick="selectCategory('건강')">건강</button>
+  <button class="category-btn" data-category="행운">🍀 행운</button>
+  <button class="category-btn" data-category="재물">💰 재물</button>
+  <button class="category-btn" data-category="사랑">❤️ 사랑</button>
+  <button class="category-btn" data-category="건강">🏥 건강</button>
 </div>
-
-<div class="cookies">
-    <div class="cookie" onclick="openCookie()">🍪</div>
-    <div class="cookie" onclick="openCookie()">🍪</div>
-    <div class="cookie" onclick="openCookie()">🍪</div>
+<div class="fortune-box" id="fortuneBox">오늘의 행복 문구가 여기에 나타납니다.</div>
+<button class="cookie-btn" id="cookieBtn">🍪</button>
+<div class="social-buttons">
+  <a href="#" target="_blank" class="twitter" id="shareTwitter">트위터 공유</a>
+  <a href="#" target="_blank" class="facebook" id="shareFacebook">페이스북 공유</a>
 </div>
-
-<div id="fortune">오늘의 행복 문구가 여기에 나타납니다.</div>
-<div id="status"></div>
-
-<div id="share-buttons">
-    <button class="share-btn" onclick="shareTwitter()">트위터 공유</button>
-    <button class="share-btn" onclick="shareFacebook()">페이스북 공유</button>
-</div>
-
-<footer>
-    <p>즐겁게 하루를 시작하세요!</p>
-</footer>
-
-<div class="ad-container">
-    <ins class="adsbygoogle" style="display:block"
-         data-ad-client="ca-pub-4634078773523032"
-         data-ad-slot="1234567890"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-</div>
-
 <script>
 const fortunes = {
-    행운:["오늘은 작은 기쁨이 찾아옵니다.","기분 좋은 일이 생길 거예요."],
-    재물:["소소한 재물 운이 따릅니다.","조금 더 절약해보세요."],
-    사랑:["따뜻한 만남이 예상됩니다.","오늘은 사랑이 충만합니다."],
-    건강:["건강 관리에 유의하세요.","몸과 마음이 편안한 하루가 돼요."]
+  '행운': [
+    '오늘 당신은 작은 기쁨을 발견할 것입니다.',
+    '오늘의 웃음이 내일의 행운을 부릅니다.',
+    '행운은 웃는 사람을 좋아합니다.',
+    '오늘은 뜻밖의 선물이 찾아옵니다.'
+  ],
+  '재물': [
+    '마음속 풍요가 오늘 하루를 밝게 합니다.',
+    '작은 감사가 큰 행복으로 돌아옵니다.',
+    '오늘은 새로운 기회를 발견할 날입니다.',
+    '오늘은 작은 선택이 큰 행운으로 이어질 거예요.'
+  ],
+  '사랑': [
+    '당신은 언제나 사랑받는 존재입니다.',
+    '작은 용기가 큰 변화를 일으킵니다.',
+    '오늘은 새로운 희망이 시작됩니다.',
+    '당신의 하루는 사랑으로 가득할 거예요.'
+  ],
+  '건강': [
+    '마음속 평화가 당신의 하루를 밝혀줍니다.',
+    '포근한 마음으로 주변을 바라보세요.',
+    '오늘은 마음이 한결 가벼워집니다.',
+    '당신의 하루는 따뜻한 말로 더 행복해질 거예요.'
+  ]
 };
-const rareFortunes = ["특별한 행운이 찾아왔습니다!","깜짝 놀랄 일이 생길지도 몰라요!"];
-const miniFortunes = ["🎁 깜짝 선물 등장! 추가 행복 문구!"];
-let selectedCategory = "";
+
+let currentCategory = '행운';
 let points = 0;
 let level = 1;
-const fortuneBox = document.getElementById("fortune");
 
-function selectCategory(cat){
-    selectedCategory = cat;
-    document.querySelectorAll(".category-btn").forEach(b=>b.classList.remove("selected"));
-    event.target.classList.add("selected");
-}
+const fortuneBox = document.getElementById('fortuneBox');
+const cookieBtn = document.getElementById('cookieBtn');
+const categoryButtons = document.querySelectorAll('.category-btn');
 
-function updateStatus(){
-    document.getElementById("status").innerText = `레벨: ${level} | 포인트: ${points}`;
-}
+categoryButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    categoryButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCategory = btn.dataset.category;
+  });
+});
 
-function getRandomFortune(){
-    if(level>=4 && Math.random()<0.3) return rareFortunes[Math.floor(Math.random()*rareFortunes.length)];
-    return fortunes[selectedCategory][Math.floor(Math.random()*fortunes[selectedCategory].length)];
-}
+function showFortune() {
+  const msgs = fortunes[currentCategory];
+  const msg = msgs[Math.floor(Math.random() * msgs.length)];
+  fortuneBox.textContent = '';
+  let i = 0;
 
-function createFireworks(x,y){
-    let count = 10; let shapes = ["✨"];
-    let colors = ["#ff99cc","#ffb6c1"];
-    if(level===3){ count=15; shapes.push("💖"); colors.push("#ff69b4","#ffb347"); }
-    if(level>=4){ count=22; shapes.push("💖","🌟","🎉"); colors.push("#00ffff","#ff00ff","#ff4500","#ffd700","#ff69b4"); }
-
-    for(let i=0;i<count;i++){
-        const f = document.createElement("div");
-        f.className="firework";
-        const angle = Math.random()*2*Math.PI;
-        const distance = 50 + Math.random()*50;
-        f.style.left=`${x}px`;
-        f.style.top=`${y}px`;
-        f.style.transform=`translate(${Math.cos(angle)*distance}px,${Math.sin(angle)*distance}px)`;
-        f.style.color = colors[Math.floor(Math.random()*colors.length)];
-        f.textContent = shapes[Math.floor(Math.random()*shapes.length)];
-        document.body.appendChild(f);
-        setTimeout(()=>f.remove(),800);
+  const typeWriter = setInterval(() => {
+    if (i < msg.length) {
+      fortuneBox.textContent += msg[i];
+      i++;
+    } else {
+      clearInterval(typeWriter);
+      createParticles();
+      points++;
+      if (points % 5 === 0) levelUp();
     }
+  }, 40);
 }
 
-function openCookie(){
-    if(!selectedCategory){ alert("카테고리를 먼저 선택해주세요!"); return; }
-    fortuneBox.innerHTML="";
-    points +=1;
-    if(points>=30) level=4;
-    else if(points>=20) level=3;
-    else if(points>=10) level=2;
-    updateStatus();
+cookieBtn.addEventListener('click', showFortune);
 
-    const isMini = Math.random()<0.15;
-    if(isMini){
-        fortuneBox.innerText = miniFortunes[Math.floor(Math.random()*miniFortunes.length)];
-        createFireworks(window.innerWidth/2, fortuneBox.getBoundingClientRect().top+50);
-        return;
-    }
+function createParticles() {
+  for (let i = 0; i < 10; i++) {
+    const particle = document.createElement('div');
+    particle.classList.add('particle');
+    particle.style.left = Math.random() * 280 + 'px';
+    particle.style.top = Math.random() * 80 + 'px';
+    particle.style.background = `hsl(${Math.random() * 360}, 80%, 70%)`;
+    fortuneBox.appendChild(particle);
+    setTimeout(() => particle.remove(), 2000);
+  }
+}
 
-    const text = getRandomFortune();
-    [...text].forEach((ch,i)=>{
-        const span = document.createElement("span");
-        span.classList.add("fortune-letter");
-        span.style.animationDelay=`${i*0.05}s`;
-        span.textContent = ch;
-        fortuneBox.appendChild(span);
-    });
-
-    createFireworks(window.innerWidth/2, fortuneBox.getBoundingClientRect().top+50);
+function levelUp() {
+  level++;
+  // 폭죽 애니메이션
+  const firework = document.createElement('div');
+  firework.classList.add('firework');
+  firework.style.left = Math.random() * 200 + 'px';
+  firework.style.top = Math.random() * 50 + 'px';
+  firework.style.background = `radial-gradient(circle, #ff69b4, #ff1493, #ffb6c1)`;
+  fortuneBox.appendChild(firework);
+  setTimeout(() => firework.remove(), 800);
 }
 
 // 소셜 공유
-function shareTwitter(){
-    const text = document.getElementById("fortune").innerText;
-    const url = encodeURIComponent(location.href);
-    const img = encodeURIComponent("https://i.ibb.co/9Hz8TqP/cookie.png");
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}&via=&hashtags=행복,포춘쿠키`);
-}
-function shareFacebook(){
-    const url = encodeURIComponent(location.href);
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`);
+const shareTwitter = document.getElementById('shareTwitter');
+const shareFacebook = document.getElementById('shareFacebook');
+
+function updateShareLinks(msg) {
+  const url = encodeURIComponent(window.location.href);
+  const text = encodeURIComponent(msg);
+  shareTwitter.href = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+  shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`;
 }
 
-updateStatus();
+cookieBtn.addEventListener('click', () => {
+  const currentMsg = fortuneBox.textContent;
+  updateShareLinks(currentMsg);
+});
 </script>
 </body>
 </html>
