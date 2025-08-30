@@ -45,10 +45,9 @@
     min-height: 60px;
     font-size: 20px;
     font-weight: bold;
-    color: #ff69b4;
+    color: #000; /* 검정색으로 변경 */
     white-space: pre-wrap;
   }
-  /* 글리터/빛 효과 */
   .glitter {
     position: absolute;
     width: 10px;
@@ -72,10 +71,10 @@
   <h1>오늘의 행복 문구</h1>
   
   <div class="categories">
-    <button class="category-btn active" data-category="행운">🍀 행운</button>
-    <button class="category-btn" data-category="재물">💰 재물</button>
-    <button class="category-btn" data-category="사랑">❤️ 사랑</button>
-    <button class="category-btn" data-category="건강">🏥 건강</button>
+    <button class="category-btn active" data-category="행운">행운</button>
+    <button class="category-btn" data-category="재물">재물</button>
+    <button class="category-btn" data-category="사랑">사랑</button>
+    <button class="category-btn" data-category="건강">건강</button>
   </div>
   
   <img src="https://cdn-icons-png.flaticon.com/512/188/188987.png" alt="쿠키" class="cookie" id="cookie">
@@ -84,57 +83,139 @@
   
 </div>
 
-<!-- 글리터 효과용 -->
 <script>
-  const categories = {
-    '행운': ["오늘 당신은 작은 기쁨을 발견할 것입니다.", "행운은 웃는 사람을 좋아합니다."],
-    '재물': ["마음속 풍요가 오늘 하루를 밝게 합니다.", "작은 투자로 큰 기쁨을 얻습니다."],
-    '사랑': ["작은 사랑이 세상을 바꿀 수 있습니다.", "오늘은 따뜻한 인연이 찾아옵니다."],
-    '건강': ["오늘은 몸과 마음이 가벼워질 것입니다.", "작은 운동이 큰 건강을 만듭니다."]
-  };
+const categories = {
+  '행운': [
+    "오늘 당신은 작은 기쁨을 발견할 것입니다.",
+    "오늘의 웃음이 내일의 행운을 부릅니다.",
+    "포근한 마음으로 주변을 바라보세요.",
+    "오늘은 새로운 기회를 발견할 날입니다.",
+    "작은 성공이 큰 기쁨으로 이어집니다.",
+    "행운은 웃는 사람을 좋아합니다.",
+    "오늘은 기분 좋은 우연이 기다리고 있습니다.",
+    "희망은 당신 곁에 머물고 있습니다.",
+    "오늘의 선택이 내일의 기적을 만듭니다.",
+    "오늘은 뜻밖의 선물이 찾아옵니다.",
+    "오늘은 작은 기쁨이 큰 행복으로 이어집니다.",
+    "행운은 준비된 자에게 옵니다.",
+    "오늘은 특별한 하루가 될 것입니다.",
+    "오늘은 감사가 넘치는 날입니다.",
+    "행운은 가까운 곳에 있습니다.",
+    "오늘은 좋은 소식이 들려옵니다.",
+    "오늘은 새로운 시작이 열립니다.",
+    "행운은 당신을 기다리고 있습니다.",
+    "오늘은 소중한 순간이 기다립니다.",
+    "오늘은 평소보다 운이 당신 편일 거예요."
+  ],
+  '재물': [
+    "마음속 풍요가 오늘 하루를 밝게 합니다.",
+    "작은 감사가 큰 행복으로 돌아옵니다.",
+    "오늘은 금전적 기회가 찾아올 수 있습니다.",
+    "조금 더 절약하면 큰 보람을 느낄 수 있어요.",
+    "오늘은 뜻밖의 재물이 생길 수 있습니다.",
+    "작은 선택이 큰 결실로 이어집니다.",
+    "오늘은 재정적 감각이 빛나는 날입니다.",
+    "행동하는 사람에게 기회가 찾아옵니다.",
+    "오늘은 투자보다 지혜로운 소비가 좋습니다.",
+    "금전적인 걱정보다 마음의 풍요가 중요합니다.",
+    "오늘은 작은 부가 큰 행복으로 연결됩니다.",
+    "조금씩 모은 노력이 큰 결실이 됩니다.",
+    "오늘은 계획적인 소비가 즐거움을 줍니다.",
+    "작은 절약이 큰 자유를 만듭니다.",
+    "오늘은 재물 운이 부드럽게 흐릅니다.",
+    "오늘은 풍요로운 하루가 기다립니다.",
+    "작은 지혜가 큰 성과로 이어집니다.",
+    "오늘은 기분 좋은 수입이 있을 수 있어요.",
+    "재물 운은 준비된 사람에게 옵니다.",
+    "오늘은 소소한 재물 운이 따릅니다."
+  ],
+  '사랑': [
+    "따뜻한 만남이 예상됩니다.",
+    "오늘은 사랑이 충만합니다.",
+    "당신의 미소가 주변을 밝게 합니다.",
+    "작은 친절이 큰 사랑으로 돌아옵니다.",
+    "오늘은 즐거운 만남이 기다립니다.",
+    "당신은 언제나 사랑받는 존재입니다.",
+    "작은 용기가 큰 변화를 일으킵니다.",
+    "오늘은 새로운 희망이 시작됩니다.",
+    "당신의 진심은 언제나 전달됩니다.",
+    "작은 웃음이 큰 기쁨이 됩니다.",
+    "오늘은 마음이 한결 가벼워집니다.",
+    "당신은 더 큰 사랑을 누릴 자격이 있습니다.",
+    "오늘은 좋은 인연이 다가옵니다.",
+    "당신의 마음이 세상을 밝힙니다.",
+    "작은 사랑이 세상을 바꿀 수 있습니다.",
+    "오늘은 마음이 따뜻해집니다.",
+    "당신은 언제나 특별한 사람입니다.",
+    "오늘은 특별한 기회가 찾아옵니다.",
+    "당신은 이미 충분히 소중합니다.",
+    "오늘은 즐거운 일이 기다리고 있습니다."
+  ],
+  '건강': [
+    "몸과 마음이 편안한 하루가 돼요.",
+    "오늘은 기분 좋은 운동이 행운을 부릅니다.",
+    "충분한 휴식이 에너지를 줍니다.",
+    "작은 스트레칭이 큰 활력을 줍니다.",
+    "오늘은 마음을 편히 가지세요.",
+    "건강한 음식이 행복을 배가시킵니다.",
+    "작은 습관이 큰 건강으로 이어집니다.",
+    "오늘은 마음과 몸이 균형을 찾습니다.",
+    "긍정적인 생각이 몸에도 좋습니다.",
+    "오늘은 활력 넘치는 하루가 될 것입니다.",
+    "작은 걷기가 큰 변화를 만듭니다.",
+    "오늘은 충분히 수분을 섭취하세요.",
+    "건강은 감사하는 마음에서 시작됩니다.",
+    "작은 명상이 큰 평화를 줍니다.",
+    "오늘은 정신적으로 여유로운 하루입니다.",
+    "몸과 마음이 조화를 이루는 날입니다.",
+    "오늘은 건강이 행복을 가져다줍니다.",
+    "작은 습관이 큰 건강으로 이어집니다.",
+    "오늘은 활기찬 하루가 기다립니다."
+  ]
+};
 
-  let selectedCategory = '행운';
-  const buttons = document.querySelectorAll('.category-btn');
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      buttons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedCategory = btn.dataset.category;
-    });
+let selectedCategory = '행운';
+const buttons = document.querySelectorAll('.category-btn');
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    buttons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedCategory = btn.dataset.category;
   });
+});
 
-  const messageBox = document.getElementById('messageBox');
-  const cookie = document.getElementById('cookie');
+const messageBox = document.getElementById('messageBox');
+const cookie = document.getElementById('cookie');
 
-  function typeMessage(message) {
-    messageBox.textContent = '';
-    let i = 0;
-    const interval = setInterval(() => {
-      if(i < message.length) {
-        messageBox.textContent += message[i];
-        i++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 50);
-  }
-
-  cookie.addEventListener('click', () => {
-    const msgs = categories[selectedCategory];
-    const msg = msgs[Math.floor(Math.random() * msgs.length)];
-    typeMessage(msg);
-
-    // 글리터 생성
-    for(let i=0;i<5;i++){
-      const glitter = document.createElement('div');
-      glitter.className = 'glitter';
-      glitter.style.left = Math.random()*window.innerWidth + 'px';
-      glitter.style.top = (window.scrollY + 100) + 'px';
-      glitter.style.animationDuration = (2 + Math.random()*2) + 's';
-      document.body.appendChild(glitter);
-      setTimeout(() => glitter.remove(), 3000);
+function typeMessage(message) {
+  messageBox.textContent = '';
+  let i = 0;
+  const interval = setInterval(() => {
+    if(i < message.length) {
+      messageBox.textContent += message[i];
+      i++;
+    } else {
+      clearInterval(interval);
     }
-  });
+  }, 50);
+}
+
+cookie.addEventListener('click', () => {
+  const msgs = categories[selectedCategory];
+  const msg = msgs[Math.floor(Math.random() * msgs.length)];
+  typeMessage(msg);
+
+  // 글리터 생성
+  for(let i=0;i<5;i++){
+    const glitter = document.createElement('div');
+    glitter.className = 'glitter';
+    glitter.style.left = Math.random()*window.innerWidth + 'px';
+    glitter.style.top = (window.scrollY + 100) + 'px';
+    glitter.style.animationDuration = (2 + Math.random()*2) + 's';
+    document.body.appendChild(glitter);
+    setTimeout(() => glitter.remove(), 3000);
+  }
+});
 </script>
 </body>
 </html>
