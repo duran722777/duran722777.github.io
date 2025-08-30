@@ -6,211 +6,135 @@
 <title>오늘의 행복 문구</title>
 <style>
   body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 100vh;
-    background: #fff0f5;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to bottom, #ffe5f0, #fff0f5);
     margin: 0;
-    padding: 20px;
+    padding: 0;
     overflow-x: hidden;
   }
-  h1 { margin-bottom: 10px; }
-  .categories { display: flex; gap: 10px; margin-bottom: 20px; }
-  .category-btn {
-    padding: 8px 15px;
-    border-radius: 20px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    background-color: #ffd6e8;
-    transition: background-color 0.3s;
-  }
-  .category-btn.active { background-color: #ffb6c1; }
-  .fortune-box {
-    position: relative;
-    width: 300px;
-    min-height: 100px;
-    background: linear-gradient(135deg, #ffe4ec, #ffc0cb);
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .container {
     text-align: center;
-    padding: 20px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-    overflow: hidden;
+    padding: 50px 20px;
   }
-  .cookie-btn {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background-color: #fff;
-    border-radius: 50%;
-    border: 2px solid #ffb6c1;
-    width: 50px;
-    height: 50px;
+  .cookie {
+    width: 120px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
+    transition: transform 0.2s;
   }
-  .particle {
+  .cookie:hover {
+    transform: scale(1.1);
+  }
+  .categories {
+    margin: 20px 0;
+  }
+  .category-btn {
+    padding: 10px 20px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    background: #ffd1dc;
+    color: #fff;
+    font-weight: bold;
+  }
+  .category-btn.active {
+    background: #ff99c8;
+  }
+  .message-box {
+    margin-top: 30px;
+    min-height: 60px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #ff69b4;
+    white-space: pre-wrap;
+  }
+  /* 글리터/빛 효과 */
+  .glitter {
     position: absolute;
-    width: 6px;
-    height: 6px;
-    background: #fff;
+    width: 10px;
+    height: 10px;
+    background: radial-gradient(circle, #fff 0%, #ffb6c1 80%);
     border-radius: 50%;
     opacity: 0.8;
     pointer-events: none;
-    animation: floatUp 2s linear forwards;
+    animation: float 3s infinite;
   }
-  @keyframes floatUp {
-    0% { transform: translateY(0px) scale(1); opacity: 1; }
-    100% { transform: translateY(-50px) scale(0.5); opacity: 0; }
+  @keyframes float {
+    0% { transform: translateY(0) scale(1); opacity: 0.8; }
+    50% { transform: translateY(-30px) scale(1.5); opacity: 0.4; }
+    100% { transform: translateY(0) scale(1); opacity: 0.8; }
   }
-  .firework {
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    pointer-events: none;
-    border-radius: 50%;
-  }
-  .social-buttons { display: flex; gap: 10px; margin-top: 15px; }
-  .social-buttons a {
-    text-decoration: none;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 5px;
-    font-weight: bold;
-  }
-  .twitter { background-color: #1da1f2; }
-  .facebook { background-color: #1877f2; }
 </style>
 </head>
 <body>
-<h1>오늘의 행복 문구</h1>
-<div class="categories">
-  <button class="category-btn" data-category="행운">🍀 행운</button>
-  <button class="category-btn" data-category="재물">💰 재물</button>
-  <button class="category-btn" data-category="사랑">❤️ 사랑</button>
-  <button class="category-btn" data-category="건강">🏥 건강</button>
+
+<div class="container">
+  <h1>오늘의 행복 문구</h1>
+  
+  <div class="categories">
+    <button class="category-btn active" data-category="행운">🍀 행운</button>
+    <button class="category-btn" data-category="재물">💰 재물</button>
+    <button class="category-btn" data-category="사랑">❤️ 사랑</button>
+    <button class="category-btn" data-category="건강">🏥 건강</button>
+  </div>
+  
+  <img src="https://cdn-icons-png.flaticon.com/512/188/188987.png" alt="쿠키" class="cookie" id="cookie">
+
+  <div class="message-box" id="messageBox"></div>
+  
 </div>
-<div class="fortune-box" id="fortuneBox">오늘의 행복 문구가 여기에 나타납니다.</div>
-<button class="cookie-btn" id="cookieBtn">🍪</button>
-<div class="social-buttons">
-  <a href="#" target="_blank" class="twitter" id="shareTwitter">트위터 공유</a>
-  <a href="#" target="_blank" class="facebook" id="shareFacebook">페이스북 공유</a>
-</div>
+
+<!-- 글리터 효과용 -->
 <script>
-const fortunes = {
-  '행운': [
-    '오늘 당신은 작은 기쁨을 발견할 것입니다.',
-    '오늘의 웃음이 내일의 행운을 부릅니다.',
-    '행운은 웃는 사람을 좋아합니다.',
-    '오늘은 뜻밖의 선물이 찾아옵니다.'
-  ],
-  '재물': [
-    '마음속 풍요가 오늘 하루를 밝게 합니다.',
-    '작은 감사가 큰 행복으로 돌아옵니다.',
-    '오늘은 새로운 기회를 발견할 날입니다.',
-    '오늘은 작은 선택이 큰 행운으로 이어질 거예요.'
-  ],
-  '사랑': [
-    '당신은 언제나 사랑받는 존재입니다.',
-    '작은 용기가 큰 변화를 일으킵니다.',
-    '오늘은 새로운 희망이 시작됩니다.',
-    '당신의 하루는 사랑으로 가득할 거예요.'
-  ],
-  '건강': [
-    '마음속 평화가 당신의 하루를 밝혀줍니다.',
-    '포근한 마음으로 주변을 바라보세요.',
-    '오늘은 마음이 한결 가벼워집니다.',
-    '당신의 하루는 따뜻한 말로 더 행복해질 거예요.'
-  ]
-};
+  const categories = {
+    '행운': ["오늘 당신은 작은 기쁨을 발견할 것입니다.", "행운은 웃는 사람을 좋아합니다."],
+    '재물': ["마음속 풍요가 오늘 하루를 밝게 합니다.", "작은 투자로 큰 기쁨을 얻습니다."],
+    '사랑': ["작은 사랑이 세상을 바꿀 수 있습니다.", "오늘은 따뜻한 인연이 찾아옵니다."],
+    '건강': ["오늘은 몸과 마음이 가벼워질 것입니다.", "작은 운동이 큰 건강을 만듭니다."]
+  };
 
-let currentCategory = '행운';
-let points = 0;
-let level = 1;
-
-const fortuneBox = document.getElementById('fortuneBox');
-const cookieBtn = document.getElementById('cookieBtn');
-const categoryButtons = document.querySelectorAll('.category-btn');
-
-categoryButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    categoryButtons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentCategory = btn.dataset.category;
+  let selectedCategory = '행운';
+  const buttons = document.querySelectorAll('.category-btn');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedCategory = btn.dataset.category;
+    });
   });
-});
 
-function showFortune() {
-  const msgs = fortunes[currentCategory];
-  const msg = msgs[Math.floor(Math.random() * msgs.length)];
-  fortuneBox.textContent = '';
-  let i = 0;
+  const messageBox = document.getElementById('messageBox');
+  const cookie = document.getElementById('cookie');
 
-  const typeWriter = setInterval(() => {
-    if (i < msg.length) {
-      fortuneBox.textContent += msg[i];
-      i++;
-    } else {
-      clearInterval(typeWriter);
-      createParticles();
-      points++;
-      if (points % 5 === 0) levelUp();
-    }
-  }, 40);
-}
-
-cookieBtn.addEventListener('click', showFortune);
-
-function createParticles() {
-  for (let i = 0; i < 10; i++) {
-    const particle = document.createElement('div');
-    particle.classList.add('particle');
-    particle.style.left = Math.random() * 280 + 'px';
-    particle.style.top = Math.random() * 80 + 'px';
-    particle.style.background = `hsl(${Math.random() * 360}, 80%, 70%)`;
-    fortuneBox.appendChild(particle);
-    setTimeout(() => particle.remove(), 2000);
+  function typeMessage(message) {
+    messageBox.textContent = '';
+    let i = 0;
+    const interval = setInterval(() => {
+      if(i < message.length) {
+        messageBox.textContent += message[i];
+        i++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 50);
   }
-}
 
-function levelUp() {
-  level++;
-  // 폭죽 애니메이션
-  const firework = document.createElement('div');
-  firework.classList.add('firework');
-  firework.style.left = Math.random() * 200 + 'px';
-  firework.style.top = Math.random() * 50 + 'px';
-  firework.style.background = `radial-gradient(circle, #ff69b4, #ff1493, #ffb6c1)`;
-  fortuneBox.appendChild(firework);
-  setTimeout(() => firework.remove(), 800);
-}
+  cookie.addEventListener('click', () => {
+    const msgs = categories[selectedCategory];
+    const msg = msgs[Math.floor(Math.random() * msgs.length)];
+    typeMessage(msg);
 
-// 소셜 공유
-const shareTwitter = document.getElementById('shareTwitter');
-const shareFacebook = document.getElementById('shareFacebook');
-
-function updateShareLinks(msg) {
-  const url = encodeURIComponent(window.location.href);
-  const text = encodeURIComponent(msg);
-  shareTwitter.href = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
-  shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`;
-}
-
-cookieBtn.addEventListener('click', () => {
-  const currentMsg = fortuneBox.textContent;
-  updateShareLinks(currentMsg);
-});
+    // 글리터 생성
+    for(let i=0;i<5;i++){
+      const glitter = document.createElement('div');
+      glitter.className = 'glitter';
+      glitter.style.left = Math.random()*window.innerWidth + 'px';
+      glitter.style.top = (window.scrollY + 100) + 'px';
+      glitter.style.animationDuration = (2 + Math.random()*2) + 's';
+      document.body.appendChild(glitter);
+      setTimeout(() => glitter.remove(), 3000);
+    }
+  });
 </script>
 </body>
 </html>
