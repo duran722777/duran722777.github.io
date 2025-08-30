@@ -20,6 +20,10 @@
     width: 120px;
     cursor: pointer;
     transition: transform 0.2s;
+    border-radius: 50%;
+    background: #fff0f5;
+    padding: 10px;
+    display: inline-block;
   }
   .cookie:hover {
     transform: scale(1.1);
@@ -34,7 +38,7 @@
     border-radius: 20px;
     cursor: pointer;
     background: #ffd1dc;
-    color: #fff;
+    color: #000;
     font-weight: bold;
   }
   .category-btn.active {
@@ -46,11 +50,8 @@
     font-size: 20px;
     font-weight: bold;
     color: #000;
-    line-height: 1.8;
-    word-break: keep-all;
     white-space: pre-wrap;
   }
-  /* 글리터/빛 효과 */
   .glitter {
     position: absolute;
     width: 10px;
@@ -74,16 +75,19 @@
   <h1>오늘의 행복 문구</h1>
   
   <div class="categories">
-    <button class="category-btn active" data-category="행운">행운</button>
-    <button class="category-btn" data-category="재물">재물</button>
-    <button class="category-btn" data-category="사랑">사랑</button>
-    <button class="category-btn" data-category="건강">건강</button>
+    <button class="category-btn active" data-category="행운">🍀 행운</button>
+    <button class="category-btn" data-category="재물">💰 재물</button>
+    <button class="category-btn" data-category="사랑">❤️ 사랑</button>
+    <button class="category-btn" data-category="건강">🏥 건강</button>
   </div>
   
-  <img src="https://cdn-icons-png.flaticon.com/512/188/188987.png" alt="쿠키" class="cookie" id="cookie">
+  <div class="cookie" id="cookie">
+    <img src="https://cdn-icons-png.flaticon.com/512/188/188987.png" alt="캐릭터" width="100">
+  </div>
 
-  <div class="message-box" id="messageBox"></div>
-  
+  <div class="message-box" id="messageBox">
+    먼저 캐릭터를 클릭하세요! 🐱
+  </div>
 </div>
 
 <script>
@@ -192,11 +196,15 @@
 
   function typeMessage(message) {
     messageBox.textContent = '';
-    message.split('').forEach((char, index) => {
-      setTimeout(() => {
-        messageBox.textContent += char;
-      }, 50 * index);
-    });
+    let i = 0;
+    const interval = setInterval(() => {
+      if(i < message.length) {
+        messageBox.textContent += message[i];
+        i++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 50);
   }
 
   cookie.addEventListener('click', () => {
