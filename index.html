@@ -19,91 +19,22 @@ body {
     background: linear-gradient(to bottom, #fff1e6, #ffe8f0);
 }
 
-header {
-    max-width: 800px;
-    padding: 20px;
-    text-align: center;
-}
+header { max-width: 800px; padding: 20px; text-align: center; }
+h1 { margin: 20px 0 10px; color: #d2691e; font-size: 2.4em; text-shadow: 1px 1px 2px #ffd7b5; }
+p.desc { color: #444; font-size: 1.1em; margin: 0 10px 20px; line-height: 1.5; }
 
-h1 {
-    margin: 20px 0 10px;
-    color: #d2691e;
-    font-size: 2.4em;
-    text-shadow: 1px 1px 2px #ffd7b5;
-}
+#status { margin: 10px 0; font-size: 1em; color: #555; }
 
-p.desc {
-    color: #444;
-    font-size: 1.1em;
-    margin: 0 10px 20px;
-    line-height: 1.5;
-}
+.category-buttons { margin: 15px 0; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
+.category-buttons button { padding: 8px 15px; border-radius: 10px; border: 1px solid #d2691e; background: #ffe6f0; cursor: pointer; font-size: 1em; transition: all 0.2s; }
+.category-buttons button.selected { background: #ffd6e8; color: #d2691e; }
 
-#status {
-    margin: 10px 0;
-    font-size: 1em;
-    color: #555;
-}
+.cookies { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+.cookie { width: 140px; height: 140px; background-image: url('https://i.ibb.co/9Hz8TqP/cookie.png'); background-size: cover; background-position: center; border-radius: 50%; cursor: pointer; box-shadow: 2px 4px 12px rgba(0,0,0,0.2); transition: transform 0.2s, box-shadow 0.2s, background 0.3s; }
+.cookie:active { animation: shake 0.5s, bounce 0.5s; }
 
-.category-buttons {
-    margin: 15px 0;
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.category-buttons button {
-    padding: 8px 15px;
-    border-radius: 10px;
-    border: 1px solid #d2691e;
-    background: #ffe6f0;
-    cursor: pointer;
-    font-size: 1em;
-    transition: all 0.2s;
-}
-
-.category-buttons button.selected {
-    background: #ffd6e8;
-    color: #d2691e;
-}
-
-.cookies {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 10px;
-}
-
-.cookie {
-    width: 140px;
-    height: 140px;
-    background-image: url('https://i.ibb.co/9Hz8TqP/cookie.png');
-    background-size: cover;
-    background-position: center;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 2px 4px 12px rgba(0,0,0,0.2);
-    transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
-}
-
-.cookie:active {
-    animation: shake 0.5s, bounce 0.5s;
-}
-
-@keyframes shake {
-    0% { transform: rotate(0deg); }
-    25% { transform: rotate(15deg); }
-    50% { transform: rotate(-15deg); }
-    75% { transform: rotate(10deg); }
-    100% { transform: rotate(0deg); }
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
-}
+@keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(15deg); } 50% { transform: rotate(-15deg); } 75% { transform: rotate(10deg); } 100% { transform: rotate(0deg); } }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
 #fortune {
     margin-top: 25px;
@@ -121,62 +52,18 @@ p.desc {
     word-break: keep-all;
 }
 
-.fortune-letter {
-    display: inline-block;
-    opacity: 0;
-    animation: appear 0.5s forwards;
-}
+.fortune-letter { display: inline-block; opacity: 0; animation: appear 0.5s forwards; }
+@keyframes appear { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-@keyframes appear {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+footer { max-width: 800px; margin: 20px auto 40px; font-size: 0.9em; color: #555; line-height: 1.4; text-align: center; }
+footer a { color: #d2691e; text-decoration: none; }
 
-footer {
-    max-width: 800px;
-    margin: 20px auto 40px;
-    font-size: 0.9em;
-    color: #555;
-    line-height: 1.4;
-    text-align: center;
-}
+.ad-container { width: 100%; background: #fff; padding: 8px 0; text-align: center; box-shadow: 0 -2px 6px rgba(0,0,0,0.1); margin-top: 30px; }
 
-footer a {
-    color: #d2691e;
-    text-decoration: none;
-}
+.share-buttons { margin: 15px 0; display: flex; gap: 10px; justify-content: center; }
+.share-buttons button { padding: 8px 15px; border-radius: 8px; border: none; background-color: #ffd6e8; cursor: pointer; font-size: 0.95em; transition: background 0.2s; }
+.share-buttons button:hover { background-color: #ffc6d0; }
 
-.ad-container {
-    width: 100%;
-    background: #fff;
-    padding: 8px 0;
-    text-align: center;
-    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
-    margin-top: 30px;
-}
-
-.share-buttons {
-    margin: 15px 0;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
-.share-buttons button {
-    padding: 8px 15px;
-    border-radius: 8px;
-    border: none;
-    background-color: #ffd6e8;
-    cursor: pointer;
-    font-size: 0.95em;
-    transition: background 0.2s;
-}
-
-.share-buttons button:hover {
-    background-color: #ffc6d0;
-}
-
-/* 폭죽 효과 */
 .firework {
     position: absolute;
     width: 10px;
@@ -186,18 +73,9 @@ footer a {
     pointer-events: none;
     animation: explode 0.8s forwards;
 }
+@keyframes explode { 0% { opacity: 1; transform: translate(0,0) scale(1); } 100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(2); } }
 
-@keyframes explode {
-    0% { opacity: 1; transform: translate(0,0) scale(1); }
-    100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(2); }
-}
-
-@media (max-width: 600px) {
-    .cookie { width: 110px; height: 110px; }
-    h1 { font-size: 1.8em; }
-    p.desc { font-size: 0.95em; }
-    #fortune { font-size: 1.05em; padding: 18px; }
-}
+@media (max-width: 600px) { .cookie { width: 110px; height: 110px; } h1 { font-size: 1.8em; } p.desc { font-size: 0.95em; } #fortune { font-size: 1.05em; padding: 18px; } }
 </style>
 </head>
 <body>
@@ -240,9 +118,7 @@ footer a {
          data-ad-slot="1234567890"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 
 <script>
@@ -265,7 +141,6 @@ const fortunes = {
     love: ["곧 좋은 인연이 찾아올 거예요.", "오늘은 사랑의 기운이 가득합니다.", "누군가에게 따뜻한 마음을 전해보세요."],
     health: ["오늘은 몸과 마음 모두 편안하게 흘러갈 거예요.", "작은 운동이 큰 활력을 가져옵니다.", "건강한 마음이 하루를 즐겁게 합니다."]
 };
-
 const rareFortunes = ["오늘은 당신에게 행운이 폭발합니다!", "특별한 기쁨이 당신을 찾아옵니다!", "달콤한 놀라움이 가득한 하루예요!"];
 const miniFortunes = ["깜짝 선물 등장! 추가 행운 문구!", "오늘은 특별한 기쁨이 찾아옵니다!", "달콤한 행운이 당신에게 옵니다!"];
 
@@ -283,25 +158,28 @@ function getRandomFortune(){
 }
 
 function createFireworks(x,y){
-    for(let i=0;i<12;i++){
+    let count = 10; // 기본
+    let colors = ["#ffd700","#ff69b4"];
+    if(level===3){ count=15; colors.push("#ff8c00"); }
+    if(level>=4){ count=22; colors.push("#00ffff","#ff00ff","#ff4500"); }
+
+    for(let i=0;i<count;i++){
         const f = document.createElement("div");
         f.className="firework";
         const angle = Math.random()*2*Math.PI;
-        const distance = 50 + Math.random()*30;
+        const distance = 50 + Math.random()*50;
         f.style.setProperty('--x', `${Math.cos(angle)*distance}px`);
         f.style.setProperty('--y', `${Math.sin(angle)*distance}px`);
         f.style.left = `${x}px`;
         f.style.top = `${y}px`;
+        f.style.background = colors[Math.floor(Math.random()*colors.length)];
         document.body.appendChild(f);
         setTimeout(()=>f.remove(), 800);
     }
 }
 
 function openCookie() {
-    if(!selectedCategory){
-        alert("먼저 카테고리를 선택해주세요!");
-        return;
-    }
+    if(!selectedCategory){ alert("먼저 카테고리를 선택해주세요!"); return; }
     fortuneBox.innerHTML="";
     points += 1;
 
@@ -326,22 +204,15 @@ function openCookie() {
         span.textContent = ch;
         fortuneBox.appendChild(span);
     });
+
+    // 레벨별 폭죽
+    if(Math.random()<0.25) createFireworks(window.innerWidth/2, fortuneBox.getBoundingClientRect().top+50);
 }
 
-// 소셜 공유 기능
-function shareTwitter(){
-    const text = encodeURIComponent(fortuneBox.innerText);
-    window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
-}
-
-function shareFacebook(){
-    const text = encodeURIComponent(fortuneBox.innerText);
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=&quote=${text}`, '_blank');
-}
-
-function shareKakao(){
-    alert("카카오톡 공유는 모바일에서 지원됩니다.");
-}
+// 소셜 공유
+function shareTwitter(){ const text = encodeURIComponent(fortuneBox.innerText); window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank'); }
+function shareFacebook(){ const text = encodeURIComponent(fortuneBox.innerText); window.open(`https://www.facebook.com/sharer/sharer.php?u=&quote=${text}`, '_blank'); }
+function shareKakao(){ alert("카카오톡 공유는 모바일에서 지원됩니다."); }
 
 updateStatus();
 </script>
