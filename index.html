@@ -17,7 +17,8 @@
     padding: 50px 20px;
   }
   .cookie {
-    width: 120px;
+    width: 20vw;
+    max-width: 120px;
     cursor: pointer;
     transition: transform 0.2s;
     position: relative;
@@ -53,18 +54,15 @@
     position: absolute;
     width: 10px;
     height: 10px;
-    background: radial-gradient(circle, #fff 0%, #ffb6c1 80%);
     border-radius: 50%;
-    opacity: 0.8;
     pointer-events: none;
-    animation: float 3s infinite;
+    animation: float 3s forwards;
   }
   @keyframes float {
     0% { transform: translateY(0) scale(1); opacity: 0.8; }
     50% { transform: translateY(-30px) scale(1.5); opacity: 0.4; }
-    100% { transform: translateY(0) scale(1); opacity: 0.8; }
+    100% { transform: translateY(0) scale(1); opacity: 0; }
   }
-  /* 게임 UI */
   .game-mode {
     margin: 20px 0;
   }
@@ -78,7 +76,7 @@
     color: #fff;
     font-weight: bold;
   }
-  #scoreBox {
+  #scoreBox, #highScoreBox {
     font-size: 18px;
     margin-top: 10px;
   }
@@ -103,6 +101,7 @@
     <button class="game-btn" id="clickGameBtn">쿠키 클릭 게임</button>
     <button class="game-btn" id="moveGameBtn">움직이는 쿠키 잡기</button>
     <div id="scoreBox"></div>
+    <div id="highScoreBox"></div>
   </div>
 </div>
 
@@ -113,6 +112,7 @@
 </div>
 
 <script>
+  // --- 공유 기능 ---
   const shareBtn = document.getElementById('shareBtn');
   shareBtn.addEventListener('click', () => {
     const text = encodeURIComponent(document.getElementById('messageBox').textContent);
@@ -120,18 +120,41 @@
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
   });
 
-  // --- 기존 메시지 기능 ---
+  // --- 메시지 기능 ---
   const categories = {
-    '행운': ["오늘 당신은 작은 기쁨을 발견할 것입니다.","오늘의 웃음이 내일의 행운을 부릅니다"],
-    '재물': ["마음속 풍요가 오늘 하루를 밝게 합니다.","작은 감사가 큰 행복으로 돌아옵니다"],
-    '사랑': ["따뜻한 만남이 예상됩니다.","오늘은 사랑이 충만합니다"],
-    '건강': ["몸과 마음이 편안한 하루가 돼요.","오늘은 기분 좋은 운동이 행운을 부릅니다"]
+    '행운': [
+      "오늘 당신은 작은 기쁨을 발견할 것입니다.",
+      "오늘의 웃음이 내일의 행운을 부릅니다",
+      "뜻밖의 좋은 일이 생길 수 있어요.",
+      "작은 성취가 큰 만족으로 이어집니다.",
+      "기분 좋은 소식이 찾아옵니다."
+    ],
+    '재물': [
+      "마음속 풍요가 오늘 하루를 밝게 합니다.",
+      "작은 감사가 큰 행복으로 돌아옵니다",
+      "지혜로운 선택이 재물을 불러옵니다.",
+      "오늘은 금전적 행운이 따를 수 있어요.",
+      "알뜰한 계획이 큰 이익으로 이어집니다."
+    ],
+    '사랑': [
+      "따뜻한 만남이 예상됩니다.",
+      "오늘은 사랑이 충만합니다",
+      "진심 어린 대화가 가까움을 만듭니다.",
+      "작은 친절이 사랑을 불러옵니다.",
+      "설렘 가득한 하루가 될 거예요."
+    ],
+    '건강': [
+      "몸과 마음이 편안한 하루가 돼요.",
+      "오늘은 기분 좋은 운동이 행운을 부릅니다",
+      "건강한 습관이 에너지를 줍니다.",
+      "충분한 휴식이 활력을 줍니다.",
+      "마음챙김이 스트레스를 줄여줍니다."
+    ]
   };
 
   let selectedCategory = '행운';
   let typingInterval = null;
   let typingLock = false;
-
   const buttons = document.querySelectorAll('.category-btn');
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -162,37 +185,70 @@
     }, 30);
   }
 
-  cookie.addEventListener('click', () => {
+  // --- 글리터 폭죽 ---
+  function createGlitter(x, y) {
+    const glitterCount = 12;
+    for (let i = 0; i < glitterCount; i++) {
+      const glitter = document.createElement('div');
+      glitter.className = 'glitter';
+      glitter.style.left = x + 'px';
+      glitter.style.top = y + 'px';
+      glitter.style.width = 6 + Math.random()*6 + 'px';
+      glitter.style.height = glitter.style.width;
+      glitter.style.background = `radial-gradient(circle, #fff 0%, hsl(${Math.random()*360}, 70%, 80%) 80%)`;
+      glitter.style.animationDuration = (1 + Math.random()*2) + 's';
+      const angle = Math.random()*2*Math.PI;
+      const radius = 20 + Math.random()*40;
+      glitter.style.transform = `translate(${radius*Math.cos(angle)}px, ${radius*Math.sin(angle)}px)`;
+      document.body.appendChild(glitter);
+      setTimeout(() => glitter.remove(), 2000);
+    }
+  }
+
+  cookie.addEventListener('click', (e) => {
     if (typingLock || currentGame) return;
     clickHint.style.display = 'none';
     const msgs = categories[selectedCategory];
     const msg = msgs[Math.floor(Math.random() * msgs.length)];
     typeMessage(msg);
 
-    for (let i = 0; i < 5; i++) {
-      const glitter = document.createElement('div');
-      glitter.className = 'glitter';
-      glitter.style.left = Math.random() * window.innerWidth + 'px';
-      glitter.style.top = (window.scrollY + 100) + 'px';
-      glitter.style.animationDuration = (2 + Math.random() * 2) + 's';
-      document.body.appendChild(glitter);
-      setTimeout(() => glitter.remove(), 3000);
-    }
+    const rect = cookie.getBoundingClientRect();
+    createGlitter(rect.left + rect.width/2, rect.top + rect.height/2 + window.scrollY);
   });
 
   // --- 게임 모드 ---
   const clickGameBtn = document.getElementById('clickGameBtn');
   const moveGameBtn = document.getElementById('moveGameBtn');
   const scoreBox = document.getElementById('scoreBox');
-
+  const highScoreBox = document.getElementById('highScoreBox');
   let currentGame = null;
 
-  // 1. 쿠키 클릭 횟수 제한 게임
+  function updateHighScore(gameType, score) {
+    const key = `highscore_${gameType}`;
+    const prev = parseInt(localStorage.getItem(key)) || 0;
+    if(score > prev) localStorage.setItem(key, score);
+    return Math.max(score, prev);
+  }
+
+  function animateScore(finalScore, element) {
+    let displayed = 0;
+    const interval = setInterval(() => {
+      if (displayed < finalScore) {
+        displayed++;
+        element.textContent = `점수: ${displayed}`;
+      } else {
+        clearInterval(interval);
+      }
+    }, 20);
+  }
+
+  // 쿠키 클릭 게임
   clickGameBtn.addEventListener('click', () => {
     resetCookie();
     currentGame = 'clickGame';
     let score = 0;
     scoreBox.textContent = `점수: ${score}`;
+    highScoreBox.textContent = '';
     clickHint.textContent = '10초 안에 쿠키를 최대한 클릭하세요!';
     clickHint.style.display = 'block';
 
@@ -202,46 +258,58 @@
 
     const clickHandler = () => {
       score++;
-      scoreBox.textContent = `점수: ${score}`;
+      const rect = cookie.getBoundingClientRect();
+      createGlitter(rect.left + rect.width/2, rect.top + rect.height/2 + window.scrollY);
     };
     cookie.addEventListener('click', clickHandler);
 
     setTimeout(() => {
       cookie.removeEventListener('click', clickHandler);
-      clickHint.textContent = `게임 종료! 최종 점수: ${score}`;
+      clickHint.textContent = `게임 종료!`;
+      animateScore(score, scoreBox);
+      const high = updateHighScore('clickGame', score);
+      highScoreBox.textContent = `최고 점수: ${high}`;
       currentGame = null;
-    }, 10000); // 10초
+    }, 10000);
   });
 
-  // 2. 움직이는 쿠키 잡기
+  // 움직이는 쿠키 잡기
   moveGameBtn.addEventListener('click', () => {
     resetCookie();
     currentGame = 'moveGame';
     let score = 0;
     scoreBox.textContent = `점수: ${score}`;
+    highScoreBox.textContent = '';
     clickHint.textContent = '움직이는 쿠키를 클릭하세요!';
     clickHint.style.display = 'block';
 
     cookie.style.position = 'absolute';
+    let speed = 800;
+
     const moveInterval = setInterval(() => {
       const x = Math.random() * (window.innerWidth - 100);
       const y = window.scrollY + 100 + Math.random() * (window.innerHeight - 200);
       cookie.style.left = `${x}px`;
       cookie.style.top = `${y}px`;
-    }, 800);
+      speed *= 0.95;
+    }, speed);
 
     const clickHandler = () => {
       score++;
-      scoreBox.textContent = `점수: ${score}`;
+      const rect = cookie.getBoundingClientRect();
+      createGlitter(rect.left + rect.width/2, rect.top + rect.height/2 + window.scrollY);
     };
     cookie.addEventListener('click', clickHandler);
 
     setTimeout(() => {
       clearInterval(moveInterval);
       cookie.removeEventListener('click', clickHandler);
-      clickHint.textContent = `게임 종료! 최종 점수: ${score}`;
+      clickHint.textContent = `게임 종료!`;
+      animateScore(score, scoreBox);
+      const high = updateHighScore('moveGame', score);
+      highScoreBox.textContent = `최고 점수: ${high}`;
       currentGame = null;
-    }, 15000); // 15초
+    }, 15000);
   });
 
   function resetCookie() {
