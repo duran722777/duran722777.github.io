@@ -272,6 +272,68 @@
       setTimeout(() => glitter.remove(), 3000);
     }
   });
+  <script>
+  // 기존 코드 위에 추가
+  let cookieMoving = false;
+  let cookieInterval = null;
+
+  function startCookieGame() {
+    if (cookieMoving) return;
+    cookieMoving = true;
+    let posX = Math.random() * (window.innerWidth - 100);
+    let posY = Math.random() * (window.innerHeight - 100);
+    cookie.style.position = 'absolute';
+    cookie.style.left = posX + 'px';
+    cookie.style.top = posY + 'px';
+
+    cookieInterval = setInterval(() => {
+      posX += (Math.random() * 200 - 100); // -100 ~ 100 px 이동
+      posY += (Math.random() * 200 - 100);
+      // 화면 밖으로 안 나가게 제한
+      posX = Math.max(0, Math.min(posX, window.innerWidth - cookie.offsetWidth));
+      posY = Math.max(0, Math.min(posY, window.innerHeight - cookie.offsetHeight));
+      cookie.style.left = posX + 'px';
+      cookie.style.top = posY + 'px';
+    }, 800); // 0.8초마다 위치 변경
+  }
+
+  // 기존 cookie 클릭 이벤트 수정
+  cookie.addEventListener('click', () => {
+    if (typingLock) return;
+    clickHint.style.display = 'none';
+
+    // 미니게임 시작
+    startCookieGame();
+
+    const msgs = categories[selectedCategory];
+    const msg = msgs[Math.floor(Math.random() * msgs.length)];
+    typeMessage(msg);
+
+    // 반짝이 효과
+    for (let i = 0; i < 5; i++) {
+      const glitter = document.createElement('div');
+      glitter.className = 'glitter';
+      glitter.style.left = Math.random() * window.innerWidth + 'px';
+      glitter.style.top = (window.scrollY + 100) + 'px';
+      glitter.style.animationDuration = (2 + Math.random() * 2) + 's';
+      document.body.appendChild(glitter);
+      setTimeout(() => glitter.remove(), 3000);
+    }
+  });
+
+  // 쿠키를 화면 클릭하면 미니게임 종료
+  document.body.addEventListener('click', (e) => {
+    if (!cookieMoving) return;
+    if (e.target !== cookie) {
+      clearInterval(cookieInterval);
+      cookieMoving = false;
+      cookie.style.position = '';
+      cookie.style.left = '';
+      cookie.style.top = '';
+    }
+  });
+</script>
+
 </script>
 </body>
 </html>
