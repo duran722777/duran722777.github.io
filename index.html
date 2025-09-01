@@ -80,6 +80,21 @@
   <img src="https://cdn-icons-png.flaticon.com/512/188/188987.png" alt="쿠키" class="cookie" id="cookie">
   <div class="message-box" id="messageBox"></div>
 </div>
+<!-- 공유 버튼 추가: 메시지 아래에 위치 -->
+<div style="margin-top: 15px;">
+  <button id="shareBtn" style="padding: 10px 20px; border-radius: 10px; border: none; background: #ff99c8; color: #fff; cursor: pointer; font-weight: bold;">
+    문구 공유하기
+  </button>
+</div>
+
+<script>
+  const shareBtn = document.getElementById('shareBtn');
+  shareBtn.addEventListener('click', () => {
+    const text = encodeURIComponent(document.getElementById('messageBox').textContent);
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+  });
+</script>
 
 <script>
   const categories = {
