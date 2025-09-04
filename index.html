@@ -1,138 +1,488 @@
-<script>
-// ----------------------- 전역 -----------------------
-let currentGame=null;
-const scoreBox=document.getElementById('scoreBox');
-const highScoreBox=document.getElementById('highScoreBox');
-const timeBox=document.getElementById('timeBox');
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>오늘의 행복 문구 + 미니게임 (FULL)</title>
+<style>
+  :root {
+    --pink-1:#ffe5f0; --pink-2:#fff0f5; --night-1:#2c003e; --night-2:#4b0082;
+  }
+  body{
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    margin:0; padding:0; text-align:center; overflow-x:hidden; transition:background 1s;
+    background: linear-gradient(to bottom, var(--pink-1), var(--pink-2));
+  }
+  .container{ padding:48px 20px 20px; max-width:960px; margin:0 auto; }
+  h1{ margin:0 0 8px; }
+  .categories{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:14px 0 18px; }
+  .category-btn{
+    padding:12px 18px; border:none; border-radius:22px; cursor:pointer; background:#ffd1dc; color:#fff; font-weight:700;
+    box-shadow:0 2px 8px rgba(255,153,200,.3);
+  }
+  .category-btn.active{ background:#ff99c8; }
+  #clickHint{ margin:6px 0 10px; }
+  .cookie{ width:min(22vw,140px); max-width:140px; cursor:pointer; transition:transform .15s; position:relative; touch-action:manipulation; }
+  .cookie:hover{ transform:scale(1.06); }
+  .message-box{ margin-top:14px; min-height:88px; font-size:20px; font-weight:800; color:#111; white-space:pre-wrap; line-height:1.5; }
+  .game-mode{ margin:20px 0 8px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+  .game-btn{
+    padding:12px 18px; border:none; border-radius:16px; cursor:pointer; background:#ffb6c1; color:#fff; font-weight:800;
+    min-width:160px; box-shadow:0 2px 10px rgba(255,182,193,.35);
+  }
+  #scoreBox, #highScoreBox, #timeBox{
+    display:inline-block; margin:8px 6px 0; font-size:18px; font-weight:700; transition:transform .2s;
+    padding:6px 10px; border-radius:10px; background:rgba(255,255,255,.6);
+  }
 
-function animateScore(score,element){
-  element.style.transform='scale(1.5)';
-  element.textContent=`점수: ${score}`;
-  setTimeout(()=>element.style.transform='scale(1)',200);
+  /* 공유 버튼 영역 */
+  .share-wrap{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:16px 0 22px; }
+  .share-btn{
+    padding:10px 14px; border:none; border-radius:12px; cursor:pointer; background:#ff99c8; color:#fff; font-weight:800;
+    box-shadow:0 2px 10px rgba(255,153,200,.35); min-width:160px;
+  }
+
+  /* 이펙트 */
+  .glitter, .firework, .star, .congrats, .score-popup, .bonus-msg { position:absolute; pointer-events:none; }
+  .glitter{ width:10px; height:10px; background: radial-gradient(circle, #fff 0%, #ffb6c1 80%); border-radius:50%; opacity:.85; }
+  .firework{ width:6px; height:6px; border-radius:50%; opacity:1; }
+  .score-popup{ color:#ff69b4; font-weight:900; font-size:18px; text-shadow:0 1px 0 #fff; transition: transform .8s, opacity .8s; }
+  .bonus-msg{ background:#ff69b4; color:#fff; padding:6px 10px; border-radius:12px; font-weight:800; animation: bonusAnim 2s forwards; }
+  @keyframes bonusAnim{ 0%{ opacity:1; transform:translateY(0) scale(1);} 100%{ opacity:0; transform:translateY(-60px) scale(1.4);} }
+
+  .star{ width:4px; height:4px; background:#fff; border-radius:50%; opacity:.8; animation: starfall linear infinite; }
+  @keyframes starfall{ 0%{ transform:translateY(-10px); opacity:0;} 45%{opacity:1;} 100%{ transform:translateY(100vh); opacity:0;} }
+
+  .congrats{ font-size:26px; font-weight:900; color:#ff1493; text-shadow:0 2px 0 #fff; animation:bounce 1s ease forwards; }
+  @keyframes bounce{ 0%{ transform:translateY(-50px); opacity:0;} 50%{ transform:translateY(0); opacity:1;} 100%{ transform:translateY(-14px);} }
+
+  /* 작은 캐릭터 */
+  .small-char{ position:absolute; width:56px; cursor:pointer; transition:transform .25s; filter: drop-shadow(0 4px 10px rgba(0,0,0,.2)); }
+  .small-char:hover{ transform:scale(1.12) rotate(-4deg); }
+
+  /* 모바일 최적화 */
+  @media (max-width:480px){
+    .cookie{ width:34vw; max-width:150px; }
+    .category-btn, .game-btn, .share-btn{ min-width:48%; padding:12px 12px; border-radius:16px; }
+    #scoreBox, #highScoreBox, #timeBox{ font-size:16px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>오늘의 행복 문구</h1>
+
+    <div class="categories">
+      <button class="category-btn active" data-category="행운">🍀 행운</button>
+      <button class="category-btn" data-category="재물">💰 재물</button>
+      <button class="category-btn" data-category="사랑">❤️ 사랑</button>
+      <button class="category-btn" data-category="건강">🏥 건강</button>
+    </div>
+
+    <p id="clickHint">피카츄를 클릭하세요! 🐭</p>
+    <img id="cookie" class="cookie" src="https://cdn-icons-png.flaticon.com/512/188/188987.png" alt="쿠키" />
+    <div id="messageBox" class="message-box"></div>
+
+    <div class="game-mode">
+      <button class="game-btn" id="clickGameBtn">쿠키 클릭 게임</button>
+      <button class="game-btn" id="moveGameBtn">움직이는 쿠키 잡기</button>
+    </div>
+    <div>
+      <span id="scoreBox">점수: 0</span>
+      <span id="highScoreBox">최고 점수: 0</span>
+      <span id="timeBox"></span>
+    </div>
+
+    <div class="share-wrap">
+      <button class="share-btn" id="shareTextBtn">문구 공유하기 (트위터)</button>
+      <button class="share-btn" id="shareScoreTwitterBtn">트위터로 점수 공유</button>
+      <button class="share-btn" id="shareScoreKakaoBtn">카톡/공유로 점수 공유</button>
+    </div>
+  </div>
+
+  <!-- 배경 음악 & 효과음 -->
+  <audio id="bgMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
+  <audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7c9bff79b4.mp3?filename=click-124467.mp3"></audio>
+  <audio id="bonusSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_6dcd44f79f.mp3?filename=collect-134763.mp3"></audio>
+  <audio id="endSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c67ab50b1e.mp3?filename=success-1-6297.mp3"></audio>
+
+<script>
+/* ===================== 전역 요소/상태 ===================== */
+const cookie = document.getElementById('cookie');
+const messageBox = document.getElementById('messageBox');
+const clickHint = document.getElementById('clickHint');
+const scoreBox = document.getElementById('scoreBox');
+const highScoreBox = document.getElementById('highScoreBox');
+const timeBox = document.getElementById('timeBox');
+
+const shareTextBtn = document.getElementById('shareTextBtn');
+const shareScoreTwitterBtn = document.getElementById('shareScoreTwitterBtn');
+const shareScoreKakaoBtn = document.getElementById('shareScoreKakaoBtn');
+
+const bgMusic = document.getElementById('bgMusic');
+const clickSound = document.getElementById('clickSound');
+const bonusSound = document.getElementById('bonusSound');
+const endSound = document.getElementById('endSound');
+
+let selectedCategory = '행운';
+let typingInterval = null;
+let typingLock = false;
+let currentGame = null;
+let lastScore = 0;
+let lastGame = '';
+
+/* ===================== 시간대 테마 ===================== */
+function updateBackground(){
+  const h = new Date().getHours();
+  if(h >= 6 && h < 18){
+    document.body.style.background = 'linear-gradient(to bottom, var(--pink-1), var(--pink-2))';
+  } else {
+    document.body.style.background = 'linear-gradient(to bottom, var(--night-1), var(--night-2))';
+  }
+}
+updateBackground();
+
+/* ===================== 카테고리 ===================== */
+const categories = {
+  '행운': ["오늘 당신은 작은 기쁨을 발견할 것입니다.","오늘의 웃음이 내일의 행운을 부릅니다","뜻밖의 좋은 일이 생길 수 있어요","작은 성취가 큰 만족으로 이어집니다","기분 좋은 소식이 찾아옵니다"],
+  '재물': ["마음속 풍요가 오늘 하루를 밝게 합니다","작은 감사가 큰 행복으로 돌아옵니다","지혜로운 선택이 재물을 불러옵니다","오늘은 금전적 행운이 따를 수 있어요","알뜰한 계획이 큰 이익으로 이어집니다"],
+  '사랑': ["따뜻한 만남이 예상됩니다","오늘은 사랑이 충만합니다","진심 어린 대화가 가까움을 만듭니다","작은 친절이 사랑을 불러옵니다","설렘 가득한 하루가 될 거예요"],
+  '건강': ["몸과 마음이 편안한 하루가 돼요","오늘은 기분 좋은 운동이 행운을 부릅니다","건강한 습관이 에너지를 줍니다","충분한 휴식이 활력을 줍니다","마음챙김이 스트레스를 줄여줍니다"]
+};
+
+document.querySelectorAll('.category-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.category-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedCategory = btn.dataset.category;
+  },{passive:true});
+});
+
+/* ===================== 별똥별 배경 ===================== */
+function createStar(){
+  const star = document.createElement('div');
+  star.className = 'star';
+  star.style.left = Math.random()*window.innerWidth + 'px';
+  star.style.animationDuration = (2 + Math.random()*3) + 's';
+  document.body.appendChild(star);
+  setTimeout(()=>star.remove(), 5200);
+}
+setInterval(createStar, 600);
+
+/* ===================== 텍스트 타이핑 ===================== */
+function typeMessage(message){
+  if(typingInterval) clearInterval(typingInterval);
+  typingLock = true;
+  messageBox.textContent = '';
+  let i = 0;
+  typingInterval = setInterval(()=>{
+    if(i < message.length){
+      messageBox.textContent += message[i];
+      i++;
+    } else {
+      clearInterval(typingInterval);
+      typingInterval = null;
+      typingLock = false;
+    }
+  }, 26);
 }
 
-function updateHighScore(game,score){
-  const key='highScore_'+game;
-  let high=localStorage.getItem(key) || 0;
-  if(score>high){ localStorage.setItem(key,score); high=score; showCongrats(); }
-  return high;
+/* ===================== 이펙트: 글리터/폭죽/팝업 ===================== */
+function createGlitter(x,y,count=12){
+  for(let i=0;i<count;i++){
+    const g = document.createElement('div');
+    g.className = 'glitter';
+    g.style.left = x + 'px';
+    g.style.top = y + 'px';
+    g.style.background = `radial-gradient(circle, #fff 0%, hsl(${Math.random()*360},70%,80%) 80%)`;
+    const angle = Math.random()*2*Math.PI;
+    const r = 20 + Math.random()*40;
+    g.style.transition = 'transform 1.2s, opacity 1.2s';
+    g.style.transform = 'translate(0,0)';
+    g.style.opacity = '1';
+    document.body.appendChild(g);
+    requestAnimationFrame(()=>{
+      g.style.transform = `translate(${r*Math.cos(angle)}px, ${r*Math.sin(angle)}px)`;
+      g.style.opacity = '0';
+    });
+    setTimeout(()=>g.remove(), 1300);
+  }
+}
+
+function createFireworks(x,y,particles=26){
+  for(let i=0;i<particles;i++){
+    const f = document.createElement('div');
+    f.className = 'firework';
+    f.style.left = x + 'px';
+    f.style.top = y + 'px';
+    f.style.background = `hsl(${Math.random()*360},100%,75%)`;
+    f.style.borderRadius = '50%';
+    const angle = Math.random()*2*Math.PI;
+    const r = 40 + Math.random()*80;
+    f.style.transition = 'transform .85s ease-out, opacity .85s ease-out';
+    f.style.transform = 'translate(0,0)';
+    f.style.opacity = '1';
+    document.body.appendChild(f);
+    requestAnimationFrame(()=>{
+      f.style.transform = `translate(${r*Math.cos(angle)}px, ${r*Math.sin(angle)}px)`;
+      f.style.opacity = '0';
+    });
+    setTimeout(()=>f.remove(), 900);
+  }
+  createGlitter(x,y,12);
+}
+
+function popupScore(x,y,text){
+  const pop = document.createElement('div');
+  pop.className = 'score-popup';
+  pop.textContent = text;
+  pop.style.left = x + 'px';
+  pop.style.top = y + 'px';
+  const angle = Math.random()*Math.PI*2;
+  const r = 30 + Math.random()*40;
+  pop.style.transform = 'translate(0,0)';
+  pop.style.opacity = '1';
+  document.body.appendChild(pop);
+  requestAnimationFrame(()=>{
+    pop.style.transform = `translate(${r*Math.cos(angle)}px, ${r*Math.sin(angle)}px)`;
+    pop.style.opacity = '0';
+  });
+  setTimeout(()=>pop.remove(), 900);
+}
+
+/* ===================== 점수/하이스코어/애니메이션 ===================== */
+function animateScore(score, el){
+  el.style.transform = 'scale(1.5)';
+  el.textContent = `점수: ${score}`;
+  try { clickSound.currentTime = 0; clickSound.play(); } catch(e){}
+  setTimeout(()=> el.style.transform = 'scale(1)', 180);
 }
 
 function showCongrats(){
-  const c=document.createElement('div');
-  c.className='congrats';
-  c.textContent='🎉 신기록! 🎉';
-  c.style.left=window.innerWidth/2-100+'px';
-  c.style.top=100+window.scrollY+'px';
+  const c = document.createElement('div');
+  c.className = 'congrats';
+  c.textContent = '🎉 신기록 달성! 🎉';
+  c.style.left = '50%';
+  c.style.top = (window.scrollY + 110) + 'px';
+  c.style.transform = 'translateX(-50%)';
   document.body.appendChild(c);
-  setTimeout(()=>c.remove(),2000);
+  setTimeout(()=>c.remove(), 2000);
 }
 
-// ----------------------- 게임: 클릭 제한 -----------------------
-document.getElementById('clickGameBtn').addEventListener('click',()=>{
-  resetCookie();
-  currentGame='clickGame';
-  let score=0;
-  scoreBox.textContent=`점수: ${score}`;
-  clickHint.textContent='10초 안에 쿠키를 최대한 클릭하세요!';
-  clickHint.style.display='block';
-  cookie.style.position='relative';
-  cookie.style.left='0px';
-  cookie.style.top='0px';
+function updateHighScore(gameType, score){
+  const key = `highscore_${gameType}`;
+  const prev = parseInt(localStorage.getItem(key)) || 0;
+  if(score > prev){
+    localStorage.setItem(key, score);
+    showCongrats();
+  }
+  const finalHigh = Math.max(score, prev);
+  highScoreBox.textContent = `최고 점수: ${finalHigh}`;
+  return finalHigh;
+}
 
-  const clickHandler=()=>{
-    score++;
-    animateScore(score,scoreBox);
-    const rect=cookie.getBoundingClientRect();
-    createGlitter(rect.left+rect.width/2, rect.top+rect.height/2);
-  };
-  cookie.addEventListener('click',clickHandler);
+/* ===================== 쿠키 기본 클릭 (메시지) ===================== */
+cookie.addEventListener('click', (e)=>{
+  if(typingLock || currentGame) return;
+  clickHint.style.display = 'none';
+  const msgs = categories[selectedCategory];
+  let msg = msgs[Math.floor(Math.random()*msgs.length)];
 
-  let timeLeft=10;
-  timeBox.textContent=`남은 시간: ${timeLeft}s`;
-  const timer=setInterval(()=>{
-    timeLeft--;
-    timeBox.textContent=`남은 시간: ${timeLeft}s`;
-  },1000);
+  // 10% 확률 보너스 메시지
+  if(Math.random() < 0.10){
+    msg = '✨ 특별한 행운이 찾아옵니다! ✨';
+    const bonus = document.createElement('div');
+    bonus.className = 'bonus-msg';
+    bonus.style.left = e.clientX + 'px';
+    bonus.style.top = e.clientY + 'px';
+    bonus.textContent = msg;
+    document.body.appendChild(bonus);
+    setTimeout(()=>bonus.remove(), 2000);
+    try { bonusSound.currentTime = 0; bonusSound.play(); } catch(err){}
+  }
 
-  setTimeout(()=>{
-    clearInterval(timer);
-    cookie.removeEventListener('click',clickHandler);
-    clickHint.textContent=`게임 종료! 최종 점수: ${score}`;
-    updateHighScore('clickGame',score);
-    currentGame=null;
-    timeBox.textContent='';
-  },10000);
+  typeMessage(msg);
+  const rect = cookie.getBoundingClientRect();
+  const cx = rect.left + rect.width/2;
+  const cy = rect.top + rect.height/2 + window.scrollY;
+  createFireworks(cx, cy, 18);
 });
 
-// ----------------------- 게임: 움직이는 쿠키 -----------------------
-document.getElementById('moveGameBtn').addEventListener('click',()=>{
-  resetCookie();
-  currentGame='moveGame';
-  let score=0;
-  scoreBox.textContent=`점수: ${score}`;
-  clickHint.textContent='움직이는 쿠키를 클릭하세요!';
-  clickHint.style.display='block';
-  cookie.style.position='absolute';
-
-  const moveInterval=setInterval(()=>{
-    const x=Math.random()*(window.innerWidth-100);
-    const y=window.scrollY+100+Math.random()*(window.innerHeight-200);
-    cookie.style.left=`${x}px`;
-    cookie.style.top=`${y}px`;
-  },500); // 속도 증가
-
-  const clickHandler=()=>{
-    score++;
-    animateScore(score,scoreBox);
-    const rect=cookie.getBoundingClientRect();
-    createGlitter(rect.left+rect.width/2, rect.top+rect.height/2);
-  };
-  cookie.addEventListener('click',clickHandler);
-
-  let timeLeft=15;
-  timeBox.textContent=`남은 시간: ${timeLeft}s`;
-  const timer=setInterval(()=>{
-    timeLeft--;
-    timeBox.textContent=`남은 시간: ${timeLeft}s`;
-  },1000);
-
-  setTimeout(()=>{
-    clearInterval(moveInterval);
-    clearInterval(timer);
-    cookie.removeEventListener('click',clickHandler);
-    clickHint.textContent=`게임 종료! 최종 점수: ${score}`;
-    updateHighScore('moveGame',score);
-    currentGame=null;
-    timeBox.textContent='';
-  },15000);
-});
-
-// ----------------------- 작은 캐릭터 랜덤 등장 -----------------------
+/* ===================== 작은 캐릭터 랜덤 등장 ===================== */
 function spawnSmallChar(){
-  if(Math.random()<0.03 && !currentGame){
-    const char=document.createElement('img');
-    char.src='https://cdn-icons-png.flaticon.com/512/616/616408.png';
-    char.className='small-char';
-    char.style.left=Math.random()*(window.innerWidth-50)+'px';
-    char.style.top=(window.scrollY+50+Math.random()*(window.innerHeight-100))+'px';
+  if(Math.random() < 0.028 && !currentGame){
+    const char = document.createElement('img');
+    char.src = 'https://cdn-icons-png.flaticon.com/512/616/616408.png';
+    char.className = 'small-char';
+    char.style.left = Math.random()*(window.innerWidth - 56) + 'px';
+    char.style.top = (window.scrollY + 50 + Math.random()*(window.innerHeight - 120)) + 'px';
     document.body.appendChild(char);
-    char.addEventListener('click',()=>{
-      const rect=char.getBoundingClientRect();
-      createGlitter(rect.left+25, rect.top+25,'#ff0');
-      popupScore(rect.left+25, rect.top+25,'+3');
-      typeMessage('작은 친구가 행운을 가져왔어요! 🎉');
+    char.addEventListener('click', ()=>{
+      const r = char.getBoundingClientRect();
+      const x = r.left + 28, y = r.top + 28 + window.scrollY;
+      createFireworks(x, y, 26);
+      popupScore(x, y, '+5');
+      try { bonusSound.currentTime = 0; bonusSound.play(); } catch(e){}
+      typeMessage('작은 친구가 특별한 선물을 줬어요! 🌟');
       char.remove();
-    });
-    setTimeout(()=>{ if(char.parentNode) char.remove(); },5000);
+    }, {passive:true});
+    setTimeout(()=>{ if(char.parentNode) char.remove(); }, 5200);
   }
 }
-setInterval(spawnSmallChar,1000);
+setInterval(spawnSmallChar, 1000);
 
-// ----------------------- 쿠키 초기화 -----------------------
+/* ===================== 게임 로직 ===================== */
 function resetCookie(){
   cookie.style.position='relative';
   cookie.style.left='0px';
   cookie.style.top='0px';
 }
+
+document.getElementById('clickGameBtn').addEventListener('click', ()=>{
+  resetCookie();
+  currentGame = 'clickGame';
+  let score = 0;
+  lastGame = '클릭 게임';
+  scoreBox.textContent = `점수: ${score}`;
+  highScoreBox.textContent = `최고 점수: ${parseInt(localStorage.getItem('highscore_clickGame'))||0}`;
+  timeBox.textContent = '';
+  clickHint.textContent = '10초 안에 쿠키를 많이 클릭하세요!';
+  clickHint.style.display = 'block';
+  cookie.style.position = 'relative';
+
+  const handler = ()=>{
+    score++;
+    lastScore = score;
+    animateScore(score, scoreBox);
+    const r = cookie.getBoundingClientRect();
+    createFireworks(r.left + r.width/2, r.top + r.height/2 + window.scrollY, 22);
+  };
+  cookie.addEventListener('click', handler);
+
+  let left = 10;
+  timeBox.textContent = `남은 시간: ${left}s`;
+  const timer = setInterval(()=>{
+    left--;
+    timeBox.textContent = `남은 시간: ${left}s`;
+  }, 1000);
+
+  setTimeout(()=>{
+    clearInterval(timer);
+    cookie.removeEventListener('click', handler);
+    clickHint.textContent = `게임 종료! 최종 점수: ${score}`;
+    updateHighScore('clickGame', score);
+    try { endSound.currentTime = 0; endSound.play(); } catch(e){}
+    currentGame = null;
+    timeBox.textContent = '';
+  }, 10000);
+}, {passive:true});
+
+document.getElementById('moveGameBtn').addEventListener('click', ()=>{
+  resetCookie();
+  currentGame = 'moveGame';
+  let score = 0;
+  lastGame = '움직이는 쿠키';
+  scoreBox.textContent = `점수: ${score}`;
+  highScoreBox.textContent = `최고 점수: ${parseInt(localStorage.getItem('highscore_moveGame'))||0}`;
+  timeBox.textContent = '';
+  clickHint.textContent = '움직이는 쿠키를 잡으세요!';
+  clickHint.style.display = 'block';
+  cookie.style.position = 'absolute';
+
+  // 난이도 점점 증가
+  let intervalMs = 480;
+  const mover = setInterval(()=>{
+    const x = Math.random()*(window.innerWidth - 110);
+    const y = window.scrollY + 100 + Math.random()*(window.innerHeight - 220);
+    cookie.style.left = `${x}px`;
+    cookie.style.top  = `${y}px`;
+    // 점점 빨라지게
+    intervalMs = Math.max(160, intervalMs * 0.96);
+  }, 400);
+
+  const handler = ()=>{
+    score++;
+    lastScore = score;
+    animateScore(score, scoreBox);
+    const r = cookie.getBoundingClientRect();
+    createFireworks(r.left + r.width/2, r.top + r.height/2 + window.scrollY, 22);
+  };
+  cookie.addEventListener('click', handler);
+
+  let left = 15;
+  timeBox.textContent = `남은 시간: ${left}s`;
+  const timer = setInterval(()=>{
+    left--;
+    timeBox.textContent = `남은 시간: ${left}s`;
+  }, 1000);
+
+  setTimeout(()=>{
+    clearInterval(mover);
+    clearInterval(timer);
+    cookie.removeEventListener('click', handler);
+    clickHint.textContent = `게임 종료! 최종 점수: ${score}`;
+    updateHighScore('moveGame', score);
+    try { endSound.currentTime = 0; endSound.play(); } catch(e){}
+    currentGame = null;
+    timeBox.textContent = '';
+  }, 15000);
+}, {passive:true});
+
+/* ===================== 공유 기능 (문구/점수) ===================== */
+// 트위터로 현재 문구 공유
+shareTextBtn.addEventListener('click', ()=>{
+  const text = encodeURIComponent(messageBox.textContent || '오늘의 행복 문구 ✨');
+  const url  = encodeURIComponent(window.location.href);
+  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+}, {passive:true});
+
+// 트위터로 점수 공유
+shareScoreTwitterBtn.addEventListener('click', ()=>{
+  const text = encodeURIComponent(`내 기록: ${lastGame} - 점수 ${lastScore}점! ✨`);
+  const url  = encodeURIComponent(window.location.href);
+  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+}, {passive:true});
+
+// 카톡/공유(웹쉐어 API)로 점수 공유 (모바일에서 카톡 포함 공유 시트가 열림)
+shareScoreKakaoBtn.addEventListener('click', async ()=>{
+  const shareText = `내 기록: ${lastGame || '미니게임'} - ${lastScore}점! 🎮`;
+  const shareData = {
+    title: '오늘의 행복 문구 + 미니게임',
+    text: shareText,
+    url: window.location.href
+  };
+  if(navigator.share){
+    try{
+      await navigator.share(shareData);
+    }catch(e){
+      // 사용자가 취소했거나 실패: 트위터로 폴백
+      const text = encodeURIComponent(shareText);
+      const url  = encodeURIComponent(window.location.href);
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+    }
+  }else{
+    // 데스크톱 등: 클립보드 복사 폴백
+    try{
+      await navigator.clipboard.writeText(`${shareText}\n${window.location.href}`);
+      alert('공유 텍스트를 클립보드에 복사했어요. 카카오톡에 붙여넣기 하세요!');
+    }catch{
+      const text = encodeURIComponent(shareText);
+      const url  = encodeURIComponent(window.location.href);
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+    }
+  }
+}, {passive:true});
+
+/* ===================== 배경 음악 자동재생 처리 ===================== */
+(function initAudio(){
+  // 모바일 자동재생 제한 대비: 첫 사용자 상호작용에서 재생 시도
+  const tryPlay = ()=>{ bgMusic.volume = 0.18; bgMusic.play().catch(()=>{}); document.removeEventListener('pointerdown', tryPlay); };
+  document.addEventListener('pointerdown', tryPlay, {once:true, passive:true});
+  // 데스크톱은 즉시 재생 시도
+  bgMusic.volume = 0.18;
+  bgMusic.play().catch(()=>{ /* 상호작용 이후 재생 */ });
+})();
 </script>
+</body>
+</html>
